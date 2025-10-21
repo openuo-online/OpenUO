@@ -39,6 +39,7 @@ namespace ClassicUO.Game.Managers
         public bool CheckHidden => ProfileManager.CurrentProfile?.BandageAgentCheckHidden ?? false;
         public bool CheckInvul => ProfileManager.CurrentProfile?.BandageAgentCheckInvul ?? false;
         public bool HasBandagingBuff { get; set; } = false;
+        public bool UseDexFormula => ProfileManager.CurrentProfile?.BandageAgentUseDexFormula ?? false;
 
         private BandageManager()
         {
@@ -234,7 +235,6 @@ namespace ClassicUO.Game.Managers
             {
                 // Use the same pattern as BandageSelf but target the mobile
                 AsyncNetClient.Socket.Send_TargetSelectedObject(bandage.Serial, mobile.Serial);
-                _nextBandageTime = Time.Ticks + (CheckForBuff ? AsyncNetClient.Socket.Statistics.Ping + 10 : HealDelayMs);
             }
             else
             {
@@ -242,8 +242,12 @@ namespace ClassicUO.Game.Managers
                 TargetManager.SetAutoTarget(mobile.Serial, TargetType.Beneficial, CursorTarget.Object);
 
                 GameActions.DoubleClick(World.Instance, bandage.Serial);
-                _nextBandageTime = Time.Ticks + (CheckForBuff ? AsyncNetClient.Socket.Statistics.Ping + 10 : HealDelayMs);
             }
+
+            if (UseDexFormula)
+                _nextBandageTime = Time.Ticks + GetDexHealingTime(mobile.Serial == World.Instance.Player);
+            else
+                _nextBandageTime = Time.Ticks + (CheckForBuff ? AsyncNetClient.Socket.Statistics.Ping + 10 : HealDelayMs);
 
             Log.Debug("Tried to heal someone");
 
@@ -257,6 +261,20 @@ namespace ClassicUO.Game.Managers
                 return bandage;
 
             return World.Instance.Player?.FindBandage();
+        }
+
+        /// <summary>
+        /// This includes your last ping to be on the safe side
+        /// </summary>
+        /// <returns></returns>
+        private int GetDexHealingTime(bool self)
+        {
+            if (!IsEnabled) return 0;
+
+            int diff = self ? World.Instance.Player.Dexterity / 20 : World.Instance.Player.Dexterity / 60;
+            int init = self ? 11 : 4;
+
+            return (int)(((init - diff) * 1000) + AsyncNetClient.Socket.Statistics.Ping + 10);
         }
 
         /// <summary>

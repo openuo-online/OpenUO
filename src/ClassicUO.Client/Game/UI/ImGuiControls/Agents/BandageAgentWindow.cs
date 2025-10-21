@@ -12,12 +12,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
         private bool enabled;
         private int hpPercentage;
-        private bool checkForBuff;
-        private bool useNewPacket;
-        private bool checkPoisoned;
-        private bool checkHidden;
-        private bool checkInvul;
-        private bool healfriends;
+        private bool checkForBuff, useNewPacket, checkPoisoned, checkHidden, checkInvul, healfriends, dexFormula;
 
         private BandageAgentWindow() : base("Bandage Agent")
         {
@@ -35,6 +30,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             checkHidden = profile.BandageAgentCheckHidden;
             checkInvul = profile.BandageAgentCheckInvul;
             healfriends = profile.BandageAgentBandageFriends;
+            dexFormula = profile.BandageAgentUseDexFormula;
         }
 
         public override void DrawContent()
@@ -59,8 +55,6 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.Separator();
 
             // Bandage delay input
-            ImGui.Text("Bandage delay (ms):");
-            ImGui.SameLine();
             if (ImGui.InputText("##BandageDelay", ref _bandageDelayInput, 10))
             {
                 if (int.TryParse(_bandageDelayInput, out int delay))
@@ -68,7 +62,15 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     profile.BandageAgentDelay = Math.Clamp(delay, 50, 30000);
                 }
             }
+            ImGui.SameLine();
+            ImGui.Text("Delay (ms):");
             ImGuiComponents.Tooltip("Delay between bandage attempts in milliseconds (50-30000)");
+            //ImGui.SameLine();
+            if (ImGui.Checkbox("Use Dex Formula", ref dexFormula))
+            {
+                profile.BandageAgentUseDexFormula = dexFormula;
+            }
+            ImGuiComponents.Tooltip("Use the dex formula instead of a set delay");
 
             // HP percentage threshold slider
             if (ImGui.SliderInt("HP percentage threshold", ref hpPercentage, 10, 95))
