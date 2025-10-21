@@ -802,6 +802,8 @@ sealed class PacketHandlers
                         mobile.Flags &= ~Flags.Poisoned;
                     }
                 }
+
+                BandageManager.Instance.SetPoisoned(mobile.Serial, enabled);
             }
             else if (type == 2)
             {

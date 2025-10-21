@@ -2225,7 +2225,11 @@ namespace ClassicUO.LegionScripting
             {
                 if (World.Player.HasGump && (World.Player.LastGumpID == ID || ID == uint.MaxValue))
                 {
-                    return World.Player.LastGumpID;
+                    if(UIManager.GetGumpServer(World.Player.LastGumpID) is { IsDisposed:false })
+                        return World.Player.LastGumpID;
+
+                    //Gump doesn't exist, let's reset this to false
+                    World.Player.HasGump = false;
                 }
 
                 return 0;

@@ -46,6 +46,18 @@ namespace ClassicUO.Game.Managers
             EventSink.OnBuffRemoved += OnBuffRemoved;
         }
 
+        public void SetPoisoned(uint serial, bool status)
+        {
+            if (!IsEnabled || !status) return;
+
+            Mobile mobile = World.Instance?.Mobiles?.Get(serial);
+
+            if (ShouldAttemptHeal(mobile))
+            {
+                AttemptHealMobile(mobile);
+            }
+        }
+
         private void OnBuffAdded(object sender, BuffEventArgs e)
         {
             if (e.Buff.Type == BuffIconType.Healing)

@@ -57,7 +57,7 @@ public static class GenDoc
         sb.AppendLine();
 
         sb.AppendLine(":::tip[API.py File]");
-        sb.AppendLine("If you download the [API.py](API.py) file, put it in the same folder as your python scripts and add `import API` to your script, that will enable some mild form of autocomplete in an editor like VS Code.  ");
+        sb.AppendLine("If you download the [API.py](https://github.com/PlayTazUO/TazUO/blob/dev/src/ClassicUO.Client/LegionScripting/docs/API.py) file, put it in the same folder as your python scripts and add `import API` to your script, that will enable some mild form of autocomplete in an editor like VS Code.  ");
         sb.AppendLine();
         sb.AppendLine("You can now type `-updateapi` in game to download the latest API.py file.");
         sb.AppendLine(":::");
