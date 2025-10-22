@@ -146,6 +146,7 @@ namespace ClassicUO.Configuration
         public bool BandageAgentCheckInvul { get; set; } = true;
         public bool BandageAgentBandageFriends { get; set; } = false;
         public bool BandageAgentUseDexFormula { get; set; } = false;
+        public bool BandageAgentDisableSelfHeal { get; set; } = false;
 
         public bool EnableDeathScreen { get; set; } = true;
         public bool EnableBlackWhiteEffect { get; set; } = true;

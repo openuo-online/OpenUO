@@ -40,6 +40,7 @@ namespace ClassicUO.Game.Managers
         public bool CheckInvul => ProfileManager.CurrentProfile?.BandageAgentCheckInvul ?? false;
         public bool HasBandagingBuff { get; set; } = false;
         public bool UseDexFormula => ProfileManager.CurrentProfile?.BandageAgentUseDexFormula ?? false;
+        private bool DisableSelfHeal => ProfileManager.CurrentProfile?.BandageAgentDisableSelfHeal ?? false;
 
         private BandageManager()
         {
@@ -164,6 +165,10 @@ namespace ClassicUO.Game.Managers
             bool isPlayer = mobile == player;
             bool isFriend = !isPlayer && FriendBandagingEnabled && FriendsListManager.Instance.IsFriend(mobile.Serial);
             if (!isPlayer && !isFriend)
+                return false;
+
+            // Check if self-healing is disabled
+            if (isPlayer && DisableSelfHeal)
                 return false;
 
             // Check distance for friends (within 3 tiles)

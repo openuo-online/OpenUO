@@ -12,7 +12,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
         private bool enabled;
         private int hpPercentage;
-        private bool checkForBuff, useNewPacket, checkPoisoned, checkHidden, checkInvul, healfriends, dexFormula;
+        private bool checkForBuff, useNewPacket, checkPoisoned, checkHidden, checkInvul, healfriends, dexFormula, disableSelfHeal;
 
         private BandageAgentWindow() : base("Bandage Agent")
         {
@@ -31,6 +31,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             checkInvul = profile.BandageAgentCheckInvul;
             healfriends = profile.BandageAgentBandageFriends;
             dexFormula = profile.BandageAgentUseDexFormula;
+            disableSelfHeal = profile.BandageAgentDisableSelfHeal;
         }
 
         public override void DrawContent()
@@ -51,6 +52,10 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.SameLine();
             if (ImGui.Checkbox("Bandage friends", ref healfriends))
                 profile.BandageAgentBandageFriends = healfriends;
+
+            if (ImGui.Checkbox("Disable self heal", ref disableSelfHeal))
+                profile.BandageAgentDisableSelfHeal = disableSelfHeal;
+            ImGuiComponents.Tooltip("When enabled, bandage agent will only heal friends and not yourself");
 
             ImGui.Separator();
 
