@@ -133,7 +133,7 @@ namespace ClassicUO.Game.UI.Gumps.GridHighLight
             if (!up && index == list.Count - 1) return;
 
             list.RemoveAt(index);
-            list.Insert(up ? index - 1 : index + 1, _entry);;
+            list.Insert(up ? index - 1 : index + 1, _entry);
         }
 
         public static void ProcessItemOpl(World world, uint serial)

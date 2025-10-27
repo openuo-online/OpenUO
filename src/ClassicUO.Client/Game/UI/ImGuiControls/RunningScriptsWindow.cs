@@ -22,7 +22,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
             else
             {
-                foreach (var script in runningScripts)
+                foreach (var script in runningScripts.ToArray())
                 {
                     if (script == null) continue;
 

@@ -97,6 +97,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     _imguiWindowAlpha = Math.Clamp(_imguiWindowAlpha, 0.2f, 1.0f);
                     _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.IMGUI_ALPHA, _imguiWindowAlpha);
                     ImGuiManager.UpdateTheme(_imguiWindowAlpha);
+                    _lastImguiWindowAlpha = _imguiWindowAlpha;
                 }
             }
             ImGuiComponents.Tooltip("Adjust the background transparency of all ImGui windows.");
