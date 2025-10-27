@@ -136,14 +136,21 @@ public class ServerListEntry
                 }
             }
 
-            PacketLoss = (Math.Max(1, PacketLoss) / Math.Max(1, _resultIndex)) * 100;
+            if (_resultIndex > 0)
+            {
+                PacketLoss = (int)Math.Round((PacketLoss * 100.0) / _resultIndex, MidpointRounding.AwayFromZero);
+            }
+            else
+            {
+                PacketLoss = 0;
+            }
 
             _resultIndex = 0;
         }
 
         if (Ping == -1)
         {
-            Ping = (int)(Sent - Time.Ticks);
+            Ping = (int)(Time.Ticks - Sent);
         }
 
         _sending = false;

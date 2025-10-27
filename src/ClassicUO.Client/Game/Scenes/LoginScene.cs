@@ -376,7 +376,7 @@ namespace ClassicUO.Game.Scenes
         {
             if (Servers != null && Servers.Length > 0)
             {
-                _world.ServerName = Servers[ServerIndex].Name;
+                _world.ServerName = Servers[index].Name;
             }
 
             LoginHandshake.Instance.SelectServer(index, _world.ServerName);
