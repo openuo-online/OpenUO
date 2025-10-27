@@ -6,9 +6,17 @@ namespace ClassicUO.Game.Managers;
 
 public static class MainThreadQueue
 {
-    private static readonly int _threadId = Thread.CurrentThread.ManagedThreadId;
+    private static int _threadId;
     private static bool _isMainThread => Thread.CurrentThread.ManagedThreadId == _threadId;
     private static ConcurrentQueue<Action> _queuedActions { get; } = new();
+
+    /// <summary>
+    /// Must be called from main thread
+    /// </summary>
+    public static void Load()
+    {
+        _threadId = Thread.CurrentThread.ManagedThreadId;
+    }
 
     /// <summary>
     /// This will not wait for the action to complete.
@@ -59,6 +67,9 @@ public static class MainThreadQueue
         _queuedActions.Enqueue(action);
     }
 
+    /// <summary>
+    /// Must only be called on the main thread
+    /// </summary>
     public static void ProcessQueue()
     {
         while (_queuedActions.TryDequeue(out var action))

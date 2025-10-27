@@ -94,6 +94,8 @@ namespace ClassicUO
 
         protected override void Initialize()
         {
+            MainThreadQueue.Load();
+
             PreloadSettings();
             if (GraphicManager.GraphicsDevice.Adapter.IsProfileSupported(GraphicsProfile.HiDef))
             {

@@ -174,7 +174,7 @@ namespace ClassicUO.Game.GameObjects
             }
         }
 
-        private void OnSpellCastEnd(object sender, int spellID)
+        private void OnSpellCastEnd(object s, object o)
         {
             if (World?.Player == this)
             {
@@ -190,7 +190,7 @@ namespace ClassicUO.Game.GameObjects
             }
         }
 
-        private void OnSpellRecoveryEnd(object sender, int spellID)
+        private void OnSpellRecoveryEnd(object sender, object o)
         {
             if (World?.Player == this)
             {

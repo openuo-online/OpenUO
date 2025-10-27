@@ -112,6 +112,8 @@ namespace ClassicUO.Game.Managers
 
         public void ClearCasting()
         {
+            EventSink.InvokeSpellCastEnd();
+
             isCasting = false;
             currentSpell = null;
             LastSpellTime = DateTime.MinValue;
