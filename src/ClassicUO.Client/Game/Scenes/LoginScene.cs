@@ -187,6 +187,7 @@ namespace ClassicUO.Game.Scenes
                     Settings.GlobalSettings.Save();
                     break;
                 case LoginSteps.CharacterSelection:
+                    _world.ClientFeatures.SetFlags((CharacterListFlags)LoginHandshake.Instance.CharacterListFlags);
                     break;
                 case LoginSteps.EnteringBritania:
                     break;
@@ -483,8 +484,6 @@ namespace ClassicUO.Game.Scenes
 
         private void ReceiveCharacterList()
         {
-            _world.ClientFeatures.SetFlags((CharacterListFlags)LoginHandshake.Instance.CharacterListFlags);
-
             uint charToSelect = 0;
             bool haveAnyCharacter = false;
             bool canLogin = CanAutologin;

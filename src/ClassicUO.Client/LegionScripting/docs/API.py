@@ -66,6 +66,7 @@ class Events:
         pass
 
 class PyBaseControl:
+    IsVisible: bool = None
 
     def Add(self, childControl: Any) -> None:
         """

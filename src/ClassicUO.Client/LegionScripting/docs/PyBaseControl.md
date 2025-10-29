@@ -4,6 +4,10 @@ description: PyBaseControl class documentation
 ---
 
 ## Properties
+### `IsVisible`
+
+**Type:** `bool`
+
 
 *No fields found.*
 
