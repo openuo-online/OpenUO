@@ -1266,11 +1266,13 @@ while True:
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    Process.Start("xdg-open", filePath);
+                    ProcessStartInfo p = new() { FileName = "xdg-open", ArgumentList = { filePath }};
+                    Process.Start(p);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    Process.Start("open", filePath);
+                    ProcessStartInfo p = new() { FileName = "open", ArgumentList = { filePath }};
+                    Process.Start(p);
                 }
             }
             catch (Exception ex)

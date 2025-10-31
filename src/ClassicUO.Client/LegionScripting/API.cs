@@ -2011,15 +2011,12 @@ namespace ClassicUO.LegionScripting
                 case "b":
                     type = TargetType.Beneficial;
                     break;
-                case "neutral":
-                case "neut":
-                case "n":
                 default:
                     type = TargetType.Neutral;
                     break;
             }
 
-            TargetManager.SetAutoTarget(serial, type, CursorTarget.Object);
+            TargetManager.SetAutoTarget(serial, type);
         });
 
         /// <summary>
