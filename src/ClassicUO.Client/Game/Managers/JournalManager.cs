@@ -83,6 +83,9 @@ namespace ClassicUO.Game.Managers
                 {
                     string path = FileSystemHelper.CreateFolderIfNotExists(Path.Combine(CUOEnviroment.ExecutablePath, "Data"), "Client", "JournalLogs");
 
+                    //Prevent use if world or player aren't created yet
+                    if (World.Instance == null || World.Instance.Player == null) return;
+
                     // Get character name and sanitize it for use in filename
                     string characterName = World.Instance.Player?.Name ?? "Unknown";
                     characterName = SanitizeFilename(characterName);
