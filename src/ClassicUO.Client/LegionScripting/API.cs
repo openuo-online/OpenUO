@@ -2266,7 +2266,7 @@ namespace ClassicUO.LegionScripting
         public void CloseGump(uint ID = uint.MaxValue) => MainThreadQueue.InvokeOnMainThread
         (() =>
             {
-                if (World.Player == null)
+                if (World.Player == null || ID == 0) //0 Prevents weird behaviour closing system chat gump
                     return;
 
                 uint gump = ID != uint.MaxValue ? ID : World.Player.LastGumpID;
