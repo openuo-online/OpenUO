@@ -60,10 +60,7 @@ namespace ClassicUO.Game.Managers
         public void LootItem(uint serial)
         {
             Item item = _world.Items.Get(serial);
-            if (item != null)
-            {
-                LootItem(item, null);
-            }
+            if (item != null) LootItem(item, null);
         }
 
         public void LootItem(Item item, AutoLootConfigEntry entry = null)
@@ -81,10 +78,7 @@ namespace ClassicUO.Game.Managers
 
             if (cont == null) return;
 
-            for (LinkedObject i = cont.Items; i != null; i = i.Next)
-            {
-                CheckAndLoot((Item)i);
-            }
+            for (LinkedObject i = cont.Items; i != null; i = i.Next) CheckAndLoot((Item)i);
         }
 
         /// <summary>
@@ -102,10 +96,7 @@ namespace ClassicUO.Game.Managers
             }
 
             AutoLootConfigEntry entry = IsOnLootList(i);
-            if (entry != null)
-            {
-                LootItem(i, entry);
-            }
+            if (entry != null) LootItem(i, entry);
         }
 
         /// <summary>
@@ -118,12 +109,9 @@ namespace ClassicUO.Game.Managers
             if (!_loaded) return null;
 
             foreach (AutoLootConfigEntry entry in _autoLootItems)
-            {
                 if (entry.Match(i))
-                {
                     return entry;
-                }
-            }
+
             return null;
         }
 
@@ -139,12 +127,8 @@ namespace ClassicUO.Game.Managers
             var item = new AutoLootConfigEntry() { Graphic = graphic, Hue = hue, Name = name };
 
             foreach (AutoLootConfigEntry entry in _autoLootItems)
-            {
                 if (entry.Equals(item))
-                {
                     return entry;
-                }
-            }
 
             _autoLootItems.Add(item);
 
@@ -158,13 +142,18 @@ namespace ClassicUO.Game.Managers
         /// <param name="corpse"></param>
         private void HandleCorpse(Item corpse)
         {
-            if (corpse != null && corpse.IsCorpse && corpse.Distance <= ProfileManager.CurrentProfile.AutoOpenCorpseRange && (!corpse.IsHumanCorpse || ProfileManager.CurrentProfile.AutoLootHumanCorpses))
+            if (corpse is not { IsCorpse: true }) return;
+
+            if (corpse.Distance > ProfileManager.CurrentProfile.AutoOpenCorpseRange)
             {
-                for (LinkedObject i = corpse.Items; i != null; i = i.Next)
-                {
-                    CheckAndLoot((Item)i);
-                }
+                World.Instance?.Player?.AutoOpenedCorpses.Remove(corpse); //Retry if the distance was too great to loot
+                return;
             }
+
+            if (corpse.IsHumanCorpse && !ProfileManager.CurrentProfile.AutoLootHumanCorpses) return;
+
+            for (LinkedObject i = corpse.Items; i != null; i = i.Next)
+                CheckAndLoot((Item)i);
         }
 
         public void TryRemoveAutoLootEntry(string uid)
@@ -172,17 +161,10 @@ namespace ClassicUO.Game.Managers
             int removeAt = -1;
 
             for (int i = 0; i < _autoLootItems.Count; i++)
-            {
                 if (_autoLootItems[i].Uid == uid)
-                {
                     removeAt = i;
-                }
-            }
 
-            if (removeAt > -1)
-            {
-                _autoLootItems.RemoveAt(removeAt);
-            }
+            if (removeAt > -1) _autoLootItems.RemoveAt(removeAt);
         }
 
         /// <summary>
@@ -257,10 +239,7 @@ namespace ClassicUO.Game.Managers
                 CheckCorpse(i);
 
                 // Check for ground items to auto-loot (scavenger functionality)
-                if (ProfileManager.CurrentProfile.EnableScavenger && i.OnGround && !i.IsCorpse && !i.IsLocked && i.Distance <= ProfileManager.CurrentProfile.AutoOpenCorpseRange)
-                {
-                    CheckAndLoot(i);
-                }
+                if (ProfileManager.CurrentProfile.EnableScavenger && i.OnGround && !i.IsCorpse && !i.IsLocked && i.Distance <= ProfileManager.CurrentProfile.AutoOpenCorpseRange) CheckAndLoot(i);
             }
         }
 
@@ -293,73 +272,61 @@ namespace ClassicUO.Game.Managers
             }
 
             (uint item, AutoLootConfigEntry entry) = _lootItems.Dequeue();
-            if (item != 0)
+            if (item == 0) return;
+
+            if (_lootItems.Count == 0) //Que emptied out
+                _currentLootTotalCount = 0;
+
+            _quickContainsLookup.Remove(item);
+
+            Item moveItem = _world.Items.Get(item);
+
+            if (moveItem == null)
+                return;
+
+            CreateProgressBar();
+
+            if (_progressBarGump is { IsDisposed: false }) _progressBarGump.CurrentPercentage = 1 - ((double)_lootItems.Count / (double)_currentLootTotalCount);
+
+            if (moveItem.Distance > ProfileManager.CurrentProfile.AutoOpenCorpseRange)
             {
-                if (_lootItems.Count == 0) //Que emptied out
-                    _currentLootTotalCount = 0;
-
-                _quickContainsLookup.Remove(item);
-
-                Item moveItem = _world.Items.Get(item);
-
-                if (moveItem == null)
+                Item rc = _world.Items.Get(moveItem.RootContainer);
+                if (rc != null && rc.Distance > ProfileManager.CurrentProfile.AutoOpenCorpseRange)
+                {
+                    if (rc.IsCorpse)
+                        World.Instance?.Player?.AutoOpenedCorpses.Remove(rc); //Allow reopening this corpse, we got too far away to finish looting..
+                    _recentlyLooted.Remove(item);
                     return;
-
-                CreateProgressBar();
-
-                if (_progressBarGump is { IsDisposed: false })
-                {
-                    _progressBarGump.CurrentPercentage = 1 - ((double)_lootItems.Count / (double)_currentLootTotalCount);
                 }
-
-                if (moveItem.Distance > ProfileManager.CurrentProfile.AutoOpenCorpseRange)
-                {
-                    Item rc = _world.Items.Get(moveItem.RootContainer);
-                    if (rc != null && rc.Distance > ProfileManager.CurrentProfile.AutoOpenCorpseRange)
-                        return;
-                }
-
-                uint destinationSerial = 0;
-
-                //If this entry has a specific container, use it
-                if (entry != null && entry.DestinationContainer != 0)
-                {
-                    Item itemDestContainer = _world.Items.Get(entry.DestinationContainer);
-                    if (itemDestContainer != null)
-                    {
-                        destinationSerial = entry.DestinationContainer;
-                    }
-                }
-
-                if (destinationSerial == 0 && ProfileManager.CurrentProfile.GrabBagSerial != 0)
-                {
-                    Item grabBag = _world.Items.Get(ProfileManager.CurrentProfile.GrabBagSerial);
-                    if (grabBag != null)
-                    {
-                        destinationSerial = ProfileManager.CurrentProfile.GrabBagSerial;
-                    }
-                }
-
-                if (destinationSerial == 0)
-                {
-                    Item backpack = _world.Player.Backpack;
-                    if (backpack != null)
-                    {
-                        destinationSerial = backpack.Serial;
-                    }
-                }
-
-                if (destinationSerial != 0)
-                {
-                    MoveItemQueue.Instance?.Enqueue(moveItem.Serial, destinationSerial, moveItem.Amount, 0xFFFF, 0xFFFF);
-                }
-                else
-                {
-                    GameActions.Print("Could not find a container to loot into. Try setting a grab bag.");
-                }
-
-                _nextLootTime = Time.Ticks + ProfileManager.CurrentProfile.MoveMultiObjectDelay;
             }
+
+            uint destinationSerial = 0;
+
+            //If this entry has a specific container, use it
+            if (entry != null && entry.DestinationContainer != 0)
+            {
+                Item itemDestContainer = _world.Items.Get(entry.DestinationContainer);
+                if (itemDestContainer != null) destinationSerial = entry.DestinationContainer;
+            }
+
+            if (destinationSerial == 0 && ProfileManager.CurrentProfile.GrabBagSerial != 0)
+            {
+                Item grabBag = _world.Items.Get(ProfileManager.CurrentProfile.GrabBagSerial);
+                if (grabBag != null) destinationSerial = ProfileManager.CurrentProfile.GrabBagSerial;
+            }
+
+            if (destinationSerial == 0)
+            {
+                Item backpack = _world.Player.Backpack;
+                if (backpack != null) destinationSerial = backpack.Serial;
+            }
+
+            if (destinationSerial != 0)
+                MoveItemQueue.Instance?.Enqueue(moveItem.Serial, destinationSerial, moveItem.Amount, 0xFFFF, 0xFFFF);
+            else
+                GameActions.Print("Could not find a container to loot into. Try setting a grab bag.");
+
+            _nextLootTime = Time.Ticks + ProfileManager.CurrentProfile.MoveMultiObjectDelay;
         }
 
         private void CreateProgressBar()
@@ -420,13 +387,11 @@ namespace ClassicUO.Game.Managers
         public void Save()
         {
             if (_loaded)
-            {
                 try
                 {
                     JsonHelper.SaveAndBackup(_autoLootItems, _savePath, AutoLootJsonContext.Default.ListAutoLootConfigEntry);
                 }
                 catch (Exception e) { Console.WriteLine(e.ToString()); }
-            }
         }
 
         public void ExportToFile(string filePath)
@@ -456,10 +421,7 @@ namespace ClassicUO.Game.Managers
                 string data = File.ReadAllText(filePath);
                 List<AutoLootConfigEntry> importedItems = JsonSerializer.Deserialize(data, AutoLootJsonContext.Default.ListAutoLootConfigEntry);
 
-                if (importedItems != null)
-                {
-                    ImportEntries(importedItems, $"file: {filePath}");
-                }
+                if (importedItems != null) ImportEntries(importedItems, $"file: {filePath}");
             }
             catch (Exception e)
             {
@@ -472,13 +434,9 @@ namespace ClassicUO.Game.Managers
             try
             {
                 if (entries != null && entries.Count > 0)
-                {
                     ImportEntries(entries, $"character: {characterName}");
-                }
                 else
-                {
                     GameActions.Print($"No autoloot entries found for character: {characterName}", 32);
-                }
             }
             catch (Exception e)
             {
@@ -495,19 +453,14 @@ namespace ClassicUO.Game.Managers
             {
                 bool isDuplicate = false;
                 foreach (AutoLootConfigEntry existingItem in _autoLootItems)
-                {
                     if (existingItem.Equals(importedItem))
                     {
                         isDuplicate = true;
                         duplicateCount++;
                         break;
                     }
-                }
 
-                if (!isDuplicate)
-                {
-                    newItems.Add(importedItem);
-                }
+                if (!isDuplicate) newItems.Add(importedItem);
             }
 
             if (newItems.Count > 0)
@@ -517,10 +470,7 @@ namespace ClassicUO.Game.Managers
             }
 
             string message = $"Imported {newItems.Count} new autoloot entries from {source}";
-            if (duplicateCount > 0)
-            {
-                message += $" ({duplicateCount} duplicates skipped)";
-            }
+            if (duplicateCount > 0) message += $" ({duplicateCount} duplicates skipped)";
             GameActions.Print(message, 0x48);
         }
 
@@ -549,13 +499,9 @@ namespace ClassicUO.Game.Managers
 
             string rootpath;
             if (string.IsNullOrWhiteSpace(Settings.GlobalSettings.ProfilesPath))
-            {
                 rootpath = Path.Combine(CUOEnviroment.ExecutablePath, "Data", "Profiles");
-            }
             else
-            {
                 rootpath = Settings.GlobalSettings.ProfilesPath;
-            }
 
             string currentCharacterName = ProfileManager.CurrentProfile?.CharacterName ?? "";
             Dictionary<string, string> characterPaths = Exstentions.GetAllCharacterPaths(rootpath);
@@ -569,10 +515,7 @@ namespace ClassicUO.Game.Managers
                     continue;
 
                 List<AutoLootConfigEntry> configs = LoadOtherCharacterConfig(characterPath);
-                if (configs.Count > 0)
-                {
-                    otherConfigs[characterName] = configs;
-                }
+                if (configs.Count > 0) otherConfigs[characterName] = configs;
             }
 
             return otherConfigs;
@@ -605,17 +548,11 @@ namespace ClassicUO.Game.Managers
             private bool HueCheck(ushort value)
             {
                 if (Hue == ushort.MaxValue) //Ignore hue.
-                {
                     return true;
-                }
                 else if (Hue == value) //Hue must match, and it does
-                {
                     return true;
-                }
                 else //Hue is not ignored, and does not match
-                {
                     return false;
-                }
             }
 
             private bool RegexCheck(World world, Item compareTo)
