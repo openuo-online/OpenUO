@@ -836,6 +836,23 @@ namespace ClassicUO.LegionScripting
             GetScript = new Script(Lexer.Lex(FileContents), world);
         }
 
+        public void OverrideFileContents(string contents)
+        {
+            string temp = System.IO.Path.GetTempFileName();
+
+            try
+            {
+                File.WriteAllText(temp, contents);
+                File.Move(temp, FullPath, true);
+
+                GameActions.Print(World, $"Saved {FileName}.");
+            }
+            catch (Exception ex)
+            {
+                GameActions.Print(World, ex.ToString());
+            }
+        }
+
         public void ReloadFromFile()
         {
             FileContents = ReadFromFile();

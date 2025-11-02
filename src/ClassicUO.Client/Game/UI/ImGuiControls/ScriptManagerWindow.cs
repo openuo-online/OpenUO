@@ -812,7 +812,7 @@ while True:
 
             if (ImGui.MenuItem("Edit"))
             {
-                UIManager.Add(new ScriptEditor(World.Instance, script));
+                ImGuiManager.AddWindow(new ScriptEditorWindow(script));
                 _showContextMenu = false;
             }
 
