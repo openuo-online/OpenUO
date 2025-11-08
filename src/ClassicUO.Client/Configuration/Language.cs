@@ -41,23 +41,16 @@ namespace ClassicUO.Configuration
                 try
                 {
                     string jsonContent = ReadAllTextAuto(pathToLoad);
-                    System.Diagnostics.Debug.WriteLine($"Loading language file: {pathToLoad} (size: {jsonContent.Length} bytes)");
                     Language f = JsonSerializer.Deserialize(jsonContent, LanguageJsonContext.Default.Language);
                     if (f != null)
                     {
                         Instance = f;
-                        System.Diagnostics.Debug.WriteLine($"✓ Language loaded successfully from '{pathToLoad}'");
-                        System.Diagnostics.Debug.WriteLine($"✓ Search text: {Instance.GetModernOptionsGumpLanguage.Search}");
                         return;
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("✗ Deserialization returned null (culture-specific file)");
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"✗ Failed to load language file '{pathToLoad}': {ex.Message}");
+                    // Language file load failed, will try default
                 }
             }
             // 检查是否有语言文件
@@ -66,34 +59,20 @@ namespace ClassicUO.Configuration
                 try
                 {
                     string jsonContent = ReadAllTextAuto(languageFilePath);
-                    System.Diagnostics.Debug.WriteLine($"Loading Language.json, size: {jsonContent.Length} bytes");
-                    
                     Language f = JsonSerializer.Deserialize(jsonContent, LanguageJsonContext.Default.Language);
                     if (f != null)
                     {
                         Instance = f;
-                        System.Diagnostics.Debug.WriteLine($"✓ Language loaded successfully");
-                        System.Diagnostics.Debug.WriteLine($"✓ Search text: {Instance.GetModernOptionsGumpLanguage.Search}");
                         return;
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("✗ Deserialization returned null");
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"✗ Failed to load Language.json: {ex.Message}");
-                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                    // Language.json load failed
                 }
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine($"Language.json not found at: {languageFilePath}");
             }
             
             // 如果加载失败，创建默认语言文件
-            System.Diagnostics.Debug.WriteLine("Creating new English language file");
             CreateNewLanguageFile();
         }
 
@@ -148,7 +127,6 @@ namespace ClassicUO.Configuration
                     var gbk = Encoding.GetEncoding(936);
                     string text = gbk.GetString(bytes);
                     File.WriteAllText(path, text, new UTF8Encoding(false));
-                    System.Diagnostics.Debug.WriteLine($"Converted language file encoding to UTF-8: {path}");
                     return text;
                 }
                 catch
