@@ -728,6 +728,7 @@ namespace ClassicUO.Configuration
             public string PaperdollGump { get; set; } = "Paperdoll Gump";
             public string GlobalScaling { get; set; } = "Global scale";
             public string GlobalScale { get; set; } = "Scale";
+            public string Apply { get; set; } = "Apply";
             #endregion
 
             public string AutoLoot { get; set; } = "Autoloot";
