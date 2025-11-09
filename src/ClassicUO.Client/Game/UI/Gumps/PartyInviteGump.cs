@@ -18,24 +18,29 @@ namespace ClassicUO.Game.UI.Gumps
 
             int nameWidthAdjustment = mobile == null || mobile.Name.Length < 10 ? 0 : mobile.Name.Length * 5;
 
+            // 计算考虑缩放的中心位置
+            int centerX = ProfileManager.CurrentProfile.GlobalScaling 
+                ? (int)(Client.Game.Scene.Camera.Bounds.Width / ProfileManager.CurrentProfile.GlobalScale / 2)
+                : Client.Game.Scene.Camera.Bounds.Width / 2;
+
             var partyGumpBackground = new AlphaBlendControl
             {
                 Width = 270 + nameWidthAdjustment,
                 Height = 80,
-                X = Client.Game.Scene.Camera.Bounds.Width / 2 - 125,
+                X = centerX - 125,
                 Y = 150,
                 Alpha = 0.8f
             };
 
             var text = new Label(string.Format(ResGumps.P0HasInvitedYouToParty, mobile == null || string.IsNullOrEmpty(mobile.Name) ? ResGumps.NoName : mobile.Name), true, 15)
             {
-                X = Client.Game.Scene.Camera.Bounds.Width / 2 - 115,
+                X = centerX - 115,
                 Y = 165
             };
 
             var acceptButton = new NiceButton
             (
-                Client.Game.Scene.Camera.Bounds.Width / 2 + 99 + nameWidthAdjustment,
+                centerX + 99 + nameWidthAdjustment,
                 205,
                 45,
                 25,
@@ -45,7 +50,7 @@ namespace ClassicUO.Game.UI.Gumps
 
             var declineButton = new NiceButton
             (
-                Client.Game.Scene.Camera.Bounds.Width / 2 + 39 + nameWidthAdjustment,
+                centerX + 39 + nameWidthAdjustment,
                 205,
                 45,
                 25,

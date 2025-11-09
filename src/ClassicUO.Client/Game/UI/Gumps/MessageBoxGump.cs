@@ -72,8 +72,9 @@ namespace ClassicUO.Game.UI.Gumps
                 }
             );
 
-            X = (Client.Game.Window.ClientBounds.Width - Width) >> 1;
-            Y = (Client.Game.Window.ClientBounds.Height - Height) >> 1;
+            // 使用 Gump 基类的居中方法，自动处理缩放
+            CenterXInScreen();
+            CenterYInScreen();
 
             // OK
             Button b;
@@ -222,8 +223,9 @@ namespace ClassicUO.Game.UI.Gumps
 
             Add(_textBox);
 
-            X = (Client.Game.Window.ClientBounds.Width - Width) >> 1;
-            Y = (Client.Game.Window.ClientBounds.Height - Height) >> 1;
+            // 使用 Gump 基类的居中方法，自动处理缩放
+            CenterXInScreen();
+            CenterYInScreen();
 
 
             // OK
