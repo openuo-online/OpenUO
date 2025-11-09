@@ -14,7 +14,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private Profile profile;
         private Dictionary<HideHudFlags, bool> hudFlagStates;
 
-        private HudWindow() : base("HUD Settings")
+        private HudWindow() : base(ImGuiTranslations.Get("HUD"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             profile = ProfileManager.CurrentProfile;
@@ -39,34 +39,34 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
             ImGui.Spacing();
 
             // Header text
-            ImGui.TextWrapped("Check the types of gumps you would like to toggle visibility when using the Toggle Hud Visible macro.");
+            ImGui.TextWrapped(ImGuiTranslations.Get("Check the types of gumps you would like to toggle visibility when using the Toggle Hud Visible macro."));
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
 
-            // Quick actions
-            if (ImGui.Button("Select All"))
+            // Quick actions - use ## to ensure unique IDs
+            if (ImGui.Button(ImGuiTranslations.Get("Select All") + "##HudSelectAll"))
             {
                 SetAllFlags(true);
             }
             ImGui.SameLine();
-            if (ImGui.Button("Deselect All"))
+            if (ImGui.Button(ImGuiTranslations.Get("Deselect All") + "##HudDeselectAll"))
             {
                 SetAllFlags(false);
             }
             ImGui.SameLine();
-            if (ImGui.Button("Toggle HUD Now"))
+            if (ImGui.Button(ImGuiTranslations.Get("Toggle HUD Now") + "##HudToggleNow"))
             {
                 HideHudManager.ToggleHidden(profile.HideHudGumpFlags);
             }
-            ImGuiComponents.Tooltip("Immediately toggle the visibility of selected HUD elements");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Immediately toggle the visibility of selected HUD elements"));
 
             ImGui.Spacing();
             ImGui.Separator();
@@ -96,8 +96,10 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                     bool currentState = kvp.Value;
                     string flagName = HideHudManager.GetFlagName(flag);
+                    string translatedFlagName = ImGuiTranslations.Get(flagName);
 
-                    if (ImGui.Checkbox(flagName, ref currentState))
+                    // Use ## to separate display text from ID to avoid conflicts
+                    if (ImGui.Checkbox(translatedFlagName + "##Hud" + flag.ToString(), ref currentState))
                     {
                         hudFlagStates[flag] = currentState;
                         UpdateProfileFlags(flag, currentState);
@@ -131,15 +133,15 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.Spacing();
 
             // Additional information
-            if (ImGui.CollapsingHeader("Advanced"))
+            if (ImGui.CollapsingHeader(ImGuiTranslations.Get("Advanced") + "##HudAdvanced"))
             {
-                ImGui.Text($"Raw flag value: {profile.HideHudGumpFlags}");
-                if (ImGui.Button("Reset to Default"))
+                ImGui.Text(ImGuiTranslations.Get("Raw flag value: ") + profile.HideHudGumpFlags);
+                if (ImGui.Button(ImGuiTranslations.Get("Reset to Default") + "##HudReset"))
                 {
                     profile.HideHudGumpFlags = 0;
                     InitializeHudStates();
                 }
-                ImGuiComponents.Tooltip("Reset all HUD visibility settings to default (everything visible)");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Reset all HUD visibility settings to default (everything visible)"));
             }
         }
 
@@ -169,30 +171,30 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             string tooltip = flag switch
             {
-                HideHudFlags.Paperdoll => "Character paperdoll windows",
-                HideHudFlags.WorldMap => "World map window",
-                HideHudFlags.GridContainers => "Grid-style container windows",
-                HideHudFlags.Containers => "Traditional container windows",
-                HideHudFlags.Healthbars => "Health bar windows",
-                HideHudFlags.StatusBar => "Character status windows",
-                HideHudFlags.SpellBar => "Spell bar windows",
-                HideHudFlags.Journal => "Journal/chat windows",
-                HideHudFlags.XMLGumps => "Server-sent XML gump windows",
-                HideHudFlags.NearbyCorpseLoot => "Nearby corpse loot windows",
-                HideHudFlags.MacroButtons => "Macro button windows",
-                HideHudFlags.SkillButtons => "Skill button windows",
-                HideHudFlags.SkillsMenus => "Skills menu windows",
-                HideHudFlags.TopMenuBar => "Top menu bar",
-                HideHudFlags.DurabilityTracker => "Item durability tracker",
-                HideHudFlags.BuffBar => "Buff/debuff status bars",
-                HideHudFlags.CounterBar => "Item counter bars",
-                HideHudFlags.InfoBar => "Information bars",
-                HideHudFlags.SpellIcons => "Spell icon buttons",
-                HideHudFlags.NameOverheadGump => "Name overhead displays",
-                HideHudFlags.ScriptManagerGump => "Script manager window",
-                HideHudFlags.PlayerChar => "Player character (your avatar in the game world)",
-                HideHudFlags.Mouse => "Mouse cursor",
-                HideHudFlags.All => "Select/deselect all HUD elements at once",
+                HideHudFlags.Paperdoll => ImGuiTranslations.Get("Character paperdoll windows"),
+                HideHudFlags.WorldMap => ImGuiTranslations.Get("World map window"),
+                HideHudFlags.GridContainers => ImGuiTranslations.Get("Grid-style container windows"),
+                HideHudFlags.Containers => ImGuiTranslations.Get("Traditional container windows"),
+                HideHudFlags.Healthbars => ImGuiTranslations.Get("Health bar windows"),
+                HideHudFlags.StatusBar => ImGuiTranslations.Get("Character status windows"),
+                HideHudFlags.SpellBar => ImGuiTranslations.Get("Spell bar windows"),
+                HideHudFlags.Journal => ImGuiTranslations.Get("Journal/chat windows"),
+                HideHudFlags.XMLGumps => ImGuiTranslations.Get("Server-sent XML gump windows"),
+                HideHudFlags.NearbyCorpseLoot => ImGuiTranslations.Get("Nearby corpse loot windows"),
+                HideHudFlags.MacroButtons => ImGuiTranslations.Get("Macro button windows"),
+                HideHudFlags.SkillButtons => ImGuiTranslations.Get("Skill button windows"),
+                HideHudFlags.SkillsMenus => ImGuiTranslations.Get("Skills menu windows"),
+                HideHudFlags.TopMenuBar => ImGuiTranslations.Get("Top menu bar"),
+                HideHudFlags.DurabilityTracker => ImGuiTranslations.Get("Item durability tracker"),
+                HideHudFlags.BuffBar => ImGuiTranslations.Get("Buff/debuff status bars"),
+                HideHudFlags.CounterBar => ImGuiTranslations.Get("Item counter bars"),
+                HideHudFlags.InfoBar => ImGuiTranslations.Get("Information bars"),
+                HideHudFlags.SpellIcons => ImGuiTranslations.Get("Spell icon buttons"),
+                HideHudFlags.NameOverheadGump => ImGuiTranslations.Get("Name overhead displays"),
+                HideHudFlags.ScriptManagerGump => ImGuiTranslations.Get("Script manager window"),
+                HideHudFlags.PlayerChar => ImGuiTranslations.Get("Player character (your avatar in the game world)"),
+                HideHudFlags.Mouse => ImGuiTranslations.Get("Mouse cursor"),
+                HideHudFlags.All => ImGuiTranslations.Get("Select/deselect all HUD elements at once"),
                 _ => null
             };
 

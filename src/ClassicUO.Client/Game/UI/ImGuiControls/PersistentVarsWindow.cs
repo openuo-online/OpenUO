@@ -20,7 +20,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private bool _showAddDialog = false;
         private string _deleteConfirmKey = null;
 
-        private PersistentVarsWindow() : base("Persistent Variables Manager")
+        private PersistentVarsWindow() : base(ImGuiTranslations.Get("Persistent Variables Manager"))
         {
             WindowFlags = ImGuiWindowFlags.None;
         }
@@ -51,22 +51,22 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
         private void DrawScopeSelector()
         {
-            ImGui.Text("Scope:");
+            ImGui.Text(ImGuiTranslations.Get("Scope:"));
             ImGui.SameLine();
 
-            if (ImGui.RadioButton("Character", _selectedScope == API.PersistentVar.Char))
+            if (ImGui.RadioButton(ImGuiTranslations.Get("Character"), _selectedScope == API.PersistentVar.Char))
                 _selectedScope = API.PersistentVar.Char;
             ImGui.SameLine();
 
-            if (ImGui.RadioButton("Account", _selectedScope == API.PersistentVar.Account))
+            if (ImGui.RadioButton(ImGuiTranslations.Get("Account"), _selectedScope == API.PersistentVar.Account))
                 _selectedScope = API.PersistentVar.Account;
             ImGui.SameLine();
 
-            if (ImGui.RadioButton("Server", _selectedScope == API.PersistentVar.Server))
+            if (ImGui.RadioButton(ImGuiTranslations.Get("Server"), _selectedScope == API.PersistentVar.Server))
                 _selectedScope = API.PersistentVar.Server;
             ImGui.SameLine();
 
-            if (ImGui.RadioButton("Global", _selectedScope == API.PersistentVar.Global))
+            if (ImGui.RadioButton(ImGuiTranslations.Get("Global"), _selectedScope == API.PersistentVar.Global))
                 _selectedScope = API.PersistentVar.Global;
 
             // Show current scope info
@@ -77,10 +77,10 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private void DrawToolbar()
         {
             ImGui.SetNextItemWidth(200);
-            ImGui.InputTextWithHint("##filter", "Filter variables...", ref _filterText, 256);
+            ImGui.InputTextWithHint("##filter", ImGuiTranslations.Get("Filter variables..."), ref _filterText, 256);
 
             ImGui.SameLine();
-            if (ImGui.Button("Add New Variable"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add New Variable") + "##AddNewVar"))
             {
                 _showAddDialog = true;
                 _newKey = "";
@@ -88,7 +88,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Refresh"))
+            if (ImGui.Button(ImGuiTranslations.Get("Refresh") + "##RefreshVars"))
             {
                 // Force reload from file
                 PersistentVars.Load();
@@ -110,16 +110,16 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (variables.Count == 0)
             {
-                ImGui.TextDisabled("No variables found.");
+                ImGui.TextDisabled(ImGuiTranslations.Get("No variables found."));
                 return;
             }
 
             // Table with columns: Key, Value, Actions
             if (ImGui.BeginTable("VarsTable", 3, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY))
             {
-                ImGui.TableSetupColumn("Key", ImGuiTableColumnFlags.WidthFixed, 200);
-                ImGui.TableSetupColumn("Value", ImGuiTableColumnFlags.WidthStretch);
-                ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 120);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Key"), ImGuiTableColumnFlags.WidthFixed, 200);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Value"), ImGuiTableColumnFlags.WidthStretch);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 120);
                 ImGui.TableSetupScrollFreeze(0, 1); // Freeze header row
                 ImGui.TableHeadersRow();
 
@@ -159,24 +159,24 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     ImGui.TableSetColumnIndex(2);
                     if (_editingKey == kvp.Key)
                     {
-                        if (ImGui.Button("Save"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Save") + "##SaveVar"))
                         {
                             SaveEdit(kvp.Key);
                         }
                         ImGui.SameLine();
-                        if (ImGui.Button("Cancel"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelVar"))
                         {
                             CancelEdit();
                         }
                     }
                     else
                     {
-                        if (ImGui.Button("Edit"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Edit") + "##EditVar"))
                         {
                             StartEdit(kvp.Key, kvp.Value);
                         }
                         ImGui.SameLine();
-                        if (ImGui.Button("Delete"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Delete") + "##DelVar"))
                         {
                             _deleteConfirmKey = kvp.Key;
                         }
@@ -194,22 +194,22 @@ namespace ClassicUO.Game.UI.ImGuiControls
             if (_showAddDialog)
             {
                 ImGui.SetNextWindowPos(ImGui.GetMainViewport().GetCenter(), ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
-                if (ImGui.Begin("Add Variable", ref _showAddDialog, ImGuiWindowFlags.AlwaysAutoResize))
+                if (ImGui.Begin(ImGuiTranslations.Get("Add Variable"), ref _showAddDialog, ImGuiWindowFlags.AlwaysAutoResize))
                 {
-                    ImGui.Text($"Add new variable to {_selectedScope} scope:");
+                    ImGui.Text(ImGuiTranslations.Get("Add new variable to ") + _selectedScope + ImGuiTranslations.Get(" scope:"));
                     ImGui.Separator();
 
-                    ImGui.Text("Key:");
+                    ImGui.Text(ImGuiTranslations.Get("Key:"));
                     ImGui.SetNextItemWidth(300);
                     ImGui.InputText("##newkey", ref _newKey, 256);
 
-                    ImGui.Text("Value:");
+                    ImGui.Text(ImGuiTranslations.Get("Value:"));
                     ImGui.SetNextItemWidth(300);
                     ImGui.InputText("##newvalue", ref _newValue, 1024);
 
                     ImGui.Separator();
 
-                    if (ImGui.Button("Add"))
+                    if (ImGui.Button(ImGuiTranslations.Get("Add") + "##AddVarDialog"))
                     {
                         if (!string.IsNullOrWhiteSpace(_newKey))
                         {
@@ -221,7 +221,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     }
 
                     ImGui.SameLine();
-                    if (ImGui.Button("Cancel"))
+                    if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelVarDialog"))
                     {
                         _showAddDialog = false;
                         _newKey = "";
@@ -238,16 +238,16 @@ namespace ClassicUO.Game.UI.ImGuiControls
             {
                 ImGui.SetNextWindowPos(ImGui.GetMainViewport().GetCenter(), ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
                 bool open = true;
-                if (ImGui.Begin("Confirm Delete", ref open, ImGuiWindowFlags.AlwaysAutoResize))
+                if (ImGui.Begin(ImGuiTranslations.Get("Confirm Delete"), ref open, ImGuiWindowFlags.AlwaysAutoResize))
                 {
-                    ImGui.Text($"Are you sure you want to delete variable '{_deleteConfirmKey}'?");
+                    ImGui.Text(ImGuiTranslations.Get("Are you sure you want to delete variable '") + _deleteConfirmKey + ImGuiTranslations.Get("'?"));
                     ImGui.Separator();
 
                     ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.8f, 0.2f, 0.2f, 1.0f));
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.9f, 0.3f, 0.3f, 1.0f));
                     ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(0.7f, 0.1f, 0.1f, 1.0f));
 
-                    if (ImGui.Button("Delete"))
+                    if (ImGui.Button(ImGuiTranslations.Get("Delete") + "##ConfirmDelVar"))
                     {
                         PersistentVars.DeleteVar(_selectedScope, _deleteConfirmKey);
                         _deleteConfirmKey = null;
@@ -256,7 +256,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     ImGui.PopStyleColor(3);
 
                     ImGui.SameLine();
-                    if (ImGui.Button("Cancel"))
+                    if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelDelVar"))
                     {
                         _deleteConfirmKey = null;
                     }

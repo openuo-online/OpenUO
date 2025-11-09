@@ -4,7 +4,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
 {
     public class FiltersWindow : SingletonImGuiWindow<FiltersWindow>
     {
-        private FiltersWindow() : base("Filters Tab")
+        private FiltersWindow() : base(ImGuiTranslations.Get("Filters"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
         }
@@ -15,13 +15,13 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (ImGui.BeginTabBar("##FilterTabs", ImGuiTabBarFlags.None))
             {
-                if (ImGui.BeginTabItem("Graphics"))
+                if (ImGui.BeginTabItem(ImGuiTranslations.Get("Graphics")))
                 {
                     GraphicReplacementWindow.GetInstance()?.DrawContent();
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Journal Filter"))
+                if (ImGui.BeginTabItem(ImGuiTranslations.Get("Journal Filter")))
                 {
                     JournalFilterWindow.GetInstance()?.DrawContent();
                     ImGui.EndTabItem();

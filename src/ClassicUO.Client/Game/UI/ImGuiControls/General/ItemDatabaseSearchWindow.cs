@@ -44,7 +44,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private int _clearOlderThanDays = 120;
         private bool _clearInProgress = false;
 
-        private ItemDatabaseSearchWindow() : base("Item Database Search")
+        private ItemDatabaseSearchWindow() : base(ImGuiTranslations.Get("Item Database"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             _enabled = ProfileManager.CurrentProfile.ItemDatabaseEnabled;
@@ -56,14 +56,14 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             ImGui.Spacing();
 
-            if (ImGui.Checkbox("Enable", ref _enabled))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable") + "##EnableItemDB", ref _enabled))
             {
                 currentProfile.ItemDatabaseEnabled = _enabled;
             }
 
             if (!_enabled)
             {
-                ImGui.TextColored(new Vector4(1, 0.5f, 0.5f, 1), "Item Database is disabled.");
+                ImGui.TextColored(new Vector4(1, 0.5f, 0.5f, 1), ImGuiTranslations.Get("Item Database is disabled."));
                 return;
             }
 
@@ -75,7 +75,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.Spacing();
 
             // Advanced search toggle
-            if (ImGui.Checkbox("Advanced Search", ref _showAdvancedSearch))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Advanced Search") + "##AdvSearch", ref _showAdvancedSearch))
             {
                 // Reset advanced fields when toggling
                 if (!_showAdvancedSearch)
@@ -123,7 +123,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
         private void DrawBasicSearchFields()
         {
-            ImGui.SeparatorText("Options:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Options:"));
 
             // Use a table for consistent two-column layout
             if (ImGui.BeginTable("SearchFieldsTable", 2, ImGuiTableFlags.None))
@@ -135,8 +135,8 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Name");
-                ImGuiComponents.Tooltip("Search for items containing this text in their name");
+                ImGui.Text(ImGuiTranslations.Get("Name"));
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Search for items containing this text in their name"));
 
                 ImGui.TableSetColumnIndex(1);
                 ImGui.SetNextItemWidth(300);
@@ -146,8 +146,8 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Properties");
-                ImGuiComponents.Tooltip("Search for items containing this text in their properties/tooltip");
+                ImGui.Text(ImGuiTranslations.Get("Properties"));
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Search for items containing this text in their properties/tooltip"));
 
                 ImGui.TableSetColumnIndex(1);
                 ImGui.SetNextItemWidth(300);
@@ -157,15 +157,15 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Graphic ID");
-                ImGuiComponents.Tooltip("Search for items with this graphic ID (0 = any)");
+                ImGui.Text(ImGuiTranslations.Get("Graphic ID"));
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Search for items with this graphic ID (0 = any)"));
 
                 ImGui.TableSetColumnIndex(1);
                 ImGui.SetNextItemWidth(120);
                 ImGui.InputInt("##SearchGraphic", ref _searchGraphic);
                 ImGui.SameLine();
-                ImGui.Text("Hue:");
-                ImGuiComponents.Tooltip("Search for items with this hue (-1 = any)");
+                ImGui.Text(ImGuiTranslations.Get("Hue:"));
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Search for items with this hue (-1 = any)"));
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(110);
                 ImGui.InputInt("##SearchHue", ref _searchHue);
@@ -174,8 +174,8 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Layer");
-                ImGuiComponents.Tooltip("Search for items on this layer (-1 = any, 0 = Invalid/Ground)");
+                ImGui.Text(ImGuiTranslations.Get("Layer"));
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Search for items on this layer (-1 = any, 0 = Invalid/Ground)"));
 
                 ImGui.TableSetColumnIndex(1);
                 ImGui.SetNextItemWidth(100);
@@ -188,60 +188,60 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private void DrawAdvancedSearchFields()
         {
             ImGui.Spacing();
-            ImGui.SeparatorText("Advanced Options:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Advanced Options:"));
 
             // Container filter
-            ImGui.Text("Container Serial:");
+            ImGui.Text(ImGuiTranslations.Get("Container Serial:"));
             ImGui.SameLine();
             ImGui.InputInt("##SearchContainer", ref _searchContainer);
-            ImGuiComponents.Tooltip("Search only in this container (0 = any)");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Search only in this container (0 = any)"));
 
             // Location filters
-            ImGui.Checkbox("On ground only", ref _onGroundOnly);
+            ImGui.Checkbox(ImGuiTranslations.Get("On ground only") + "##OnGroundOnly", ref _onGroundOnly);
             ImGui.SameLine();
-            ImGui.Checkbox("In containers only", ref _inContainersOnly);
+            ImGui.Checkbox(ImGuiTranslations.Get("In containers only") + "##InContOnly", ref _inContainersOnly);
 
             // Character filter
-            ImGui.Checkbox("Current character only", ref _searchCurrentCharacterOnly);
+            ImGui.Checkbox(ImGuiTranslations.Get("Current character only") + "##CurCharOnly", ref _searchCurrentCharacterOnly);
 
             // Max results
-            ImGui.Text("Max Results:");
+            ImGui.Text(ImGuiTranslations.Get("Max Results:"));
             ImGui.SameLine();
             ImGui.SliderInt("##MaxResults", ref _maxResults, 10, 1000);
         }
 
         private void DrawSearchControls()
         {
-            ImGui.SeparatorText("Actions:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Actions:"));
             ImGui.AlignTextToFramePadding();
             if (_searchInProgress)
             {
-                ImGui.Text("Searching...");
+                ImGui.Text(ImGuiTranslations.Get("Searching..."));
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelSearch"))
                 {
                     _searchInProgress = false;
-                    _statusMessage = "Search canceled";
+                    _statusMessage = ImGuiTranslations.Get("Search canceled");
                 }
             }
             else
             {
-                if (ImGui.Button("Search"))
+                if (ImGui.Button(ImGuiTranslations.Get("Search") + "##DoSearch"))
                 {
                     PerformSearch();
                 }
 
                 ImGui.SameLine();
 
-                if (ImGui.Button("Clear"))
+                if (ImGui.Button(ImGuiTranslations.Get("Clear") + "##ClearSearch"))
                 {
                     ClearSearch();
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Clear Results"))
+                if (ImGui.Button(ImGuiTranslations.Get("Clear Results") + "##ClearResults"))
                 {
                     _searchResults.Clear();
-                    _statusMessage = "Results cleared";
+                    _statusMessage = ImGuiTranslations.Get("Results cleared");
                 }
             }
         }
@@ -250,25 +250,25 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (_searchResults.Count == 0)
             {
-                ImGui.Text("No results to display");
+                ImGui.Text(ImGuiTranslations.Get("No results to display"));
                 return;
             }
 
-            ImGui.Text($"Results ({_searchResults.Count}):");
+            ImGui.Text(ImGuiTranslations.Get("Results (") + _searchResults.Count + "):");
             ImGui.Separator();
 
             // Table headers
             if (ImGui.BeginTable("SearchResults", 9, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, 300)))
             {
-                ImGui.TableSetupColumn("Graphic", ImGuiTableColumnFlags.WidthFixed, 60);
-                ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, 150);
-                ImGui.TableSetupColumn("Hue", ImGuiTableColumnFlags.WidthFixed, 60);
-                ImGui.TableSetupColumn("Layer", ImGuiTableColumnFlags.WidthFixed, 70);
-                ImGui.TableSetupColumn("Location", ImGuiTableColumnFlags.WidthFixed, 100);
-                ImGui.TableSetupColumn("Container", ImGuiTableColumnFlags.WidthFixed, 80);
-                ImGui.TableSetupColumn("Character", ImGuiTableColumnFlags.WidthFixed, 100);
-                ImGui.TableSetupColumn("Updated", ImGuiTableColumnFlags.WidthFixed, 120);
-                ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 80);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Graphic"), ImGuiTableColumnFlags.WidthFixed, 60);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Name"), ImGuiTableColumnFlags.WidthFixed, 150);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Hue"), ImGuiTableColumnFlags.WidthFixed, 60);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Layer"), ImGuiTableColumnFlags.WidthFixed, 70);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Location"), ImGuiTableColumnFlags.WidthFixed, 100);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Container"), ImGuiTableColumnFlags.WidthFixed, 80);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Character"), ImGuiTableColumnFlags.WidthFixed, 100);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Updated"), ImGuiTableColumnFlags.WidthFixed, 120);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 80);
                 ImGui.TableHeadersRow();
 
                 for (int i = 0; i < _searchResults.Count; i++)
@@ -330,12 +330,12 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                     // Actions column
                     ImGui.TableSetColumnIndex(8);
-                    if (ImGui.SmallButton($"Details##{i}"))
+                    if (ImGui.SmallButton(ImGuiTranslations.Get("Details") + $"##Details{i}"))
                     {
                         OpenItemDetailWindow(item);
                     }
                     if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip("View detailed information about this item");
+                        ImGui.SetTooltip(ImGuiTranslations.Get("View detailed information about this item"));
                 }
 
                 ImGui.EndTable();
@@ -390,15 +390,15 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                         if (_searchResults.Count == 0)
                         {
-                            _statusMessage = "No items found";
+                            _statusMessage = ImGuiTranslations.Get("No items found");
                         }
                         else if (_searchResults.Count >= _maxResults)
                         {
-                            _statusMessage = $"Found {_searchResults.Count} items (max limit reached)";
+                            _statusMessage = ImGuiTranslations.Get("Found ") + _searchResults.Count + ImGuiTranslations.Get(" items (max limit reached)");
                         }
                         else
                         {
-                            _statusMessage = $"Found {_searchResults.Count} items";
+                            _statusMessage = ImGuiTranslations.Get("Found ") + _searchResults.Count + ImGuiTranslations.Get(" items");
                         }
                     });
                 },
@@ -495,19 +495,19 @@ namespace ClassicUO.Game.UI.ImGuiControls
             _inContainersOnly = false;
             _searchCurrentCharacterOnly = true;
             _maxResults = 100;
-            _statusMessage = "Search cleared";
+            _statusMessage = ImGuiTranslations.Get("Search cleared");
         }
 
         private void DrawDatabaseMaintenance()
         {
-            ImGui.SeparatorText("Database Maintenance:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Database Maintenance:"));
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Clear entries older than:");
+            ImGui.Text(ImGuiTranslations.Get("Clear entries older than:"));
             ImGui.SetNextItemWidth(100);
             ImGui.InputInt("##ClearOlderThanDays", ref _clearOlderThanDays);
             ImGui.SameLine();
-            ImGui.Text("days");
-            ImGuiComponents.Tooltip("Delete all database entries older than this many days");
+            ImGui.Text(ImGuiTranslations.Get("days"));
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Delete all database entries older than this many days"));
 
             // Ensure days is at least 1
             if (_clearOlderThanDays < 1)
@@ -515,11 +515,11 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (_clearInProgress)
             {
-                ImGui.Text("Clearing...");
+                ImGui.Text(ImGuiTranslations.Get("Clearing..."));
             }
             else
             {
-                if (ImGui.Button("Clear Old Entries"))
+                if (ImGui.Button(ImGuiTranslations.Get("Clear Old Entries") + "##ClearOldBtn"))
                 {
                     ClearOldEntries();
                 }
@@ -533,16 +533,16 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 return;
 
             _clearInProgress = true;
-            _statusMessage = $"Clearing entries older than {_clearOlderThanDays} days...";
+            _statusMessage = ImGuiTranslations.Get("Clearing entries older than ") + _clearOlderThanDays + ImGuiTranslations.Get(" days...");
 
             try
             {
                 await ItemDatabaseManager.Instance.ClearOldDataAsync(TimeSpan.FromDays(_clearOlderThanDays));
-                _statusMessage = $"Successfully cleared entries older than {_clearOlderThanDays} days";
+                _statusMessage = ImGuiTranslations.Get("Successfully cleared entries older than ") + _clearOlderThanDays + ImGuiTranslations.Get(" days");
             }
             catch (Exception ex)
             {
-                _statusMessage = $"Error clearing old entries: {ex.Message}";
+                _statusMessage = ImGuiTranslations.Get("Error clearing old entries: ") + ex.Message;
             }
             finally
             {

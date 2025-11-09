@@ -827,6 +827,7 @@
   <data name="MobilesAndCorpsesOnly" xml:space="preserve"><value>仅移动对象和尸体</value></data>
   <data name="Tell" xml:space="preserve"><value>告诉</value></data>
   <data name="Kick" xml:space="preserve"><value>踢出</value></data>
+  <data name="Msg" xml:space="preserve"><value>消息</value></data>
   <data name="PartyManifest" xml:space="preserve"><value>队伍清单</value></data>
   <data name="SendThePartyAMessage" xml:space="preserve"><value>向队伍发送消息</value></data>
   <data name="PartyCanLootMe" xml:space="preserve"><value>队伍可以拾取我的物品</value></data>

@@ -27,7 +27,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private Dictionary<BuySellItemConfig, string> _entryMaxAmountInputs = new Dictionary<BuySellItemConfig, string>();
         private Dictionary<BuySellItemConfig, string> _entryRestockInputs = new Dictionary<BuySellItemConfig, string>();
 
-        private AutoBuyWindow() : base("Auto Buy")
+        private AutoBuyWindow() : base(ImGuiTranslations.Get("Auto Buy"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             _profile = ProfileManager.CurrentProfile;
@@ -49,47 +49,47 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (_profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
             // Main settings
             ImGui.Spacing();
-            if (ImGui.Checkbox("Enable Auto Buy", ref _enableAutoBuy))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable Auto Buy") + "##EnableAutoBuy", ref _enableAutoBuy))
             {
                 _profile.BuyAgentEnabled = _enableAutoBuy;
             }
 
-            ImGui.SeparatorText("Options:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Options:"));
             ImGui.Spacing();
 
             ImGui.SetNextItemWidth(150);
-            if (ImGui.SliderInt("Max total items", ref _maxItems, 0, 1000))
+            if (ImGui.SliderInt(ImGuiTranslations.Get("Max total items") + "##MaxTotalBuy", ref _maxItems, 0, 1000))
             {
                 _profile.BuyAgentMaxItems = _maxItems;
             }
-            ImGuiComponents.Tooltip("Maximum total items to buy in a single transaction. Set to 0 for unlimited.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Maximum total items to buy in a single transaction. Set to 0 for unlimited."));
 
             ImGui.SetNextItemWidth(150);
-            if (ImGui.SliderInt("Max unique items", ref _maxUniques, 0, 100))
+            if (ImGui.SliderInt(ImGuiTranslations.Get("Max unique items") + "##MaxUniqueBuy", ref _maxUniques, 0, 100))
             {
                 _profile.BuyAgentMaxUniques = _maxUniques;
             }
-                ImGuiComponents.Tooltip("Maximum number of different items to buy in a single transaction.");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Maximum number of different items to buy in a single transaction."));
 
             ImGui.Spacing();
 
-            ImGui.SeparatorText("Entries:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Entries:"));
             // Add entry section
-            if (ImGui.Button("Add Manual Entry"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add Manual Entry") + "##AddManualBuy"))
             {
                 _showAddEntry = !_showAddEntry;
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Add from Target"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add from Target") + "##AddTargetBuy"))
             {
-                GameActions.Print(Client.Game.UO.World, "Target item to add");
+                GameActions.Print(Client.Game.UO.World, ImGuiTranslations.Get("Target item to add"));
                 World.Instance.TargetManager.SetTargeting((targetedItem) =>
                 {
                     if (targetedItem != null && targetedItem is Entity targetedEntity)
@@ -107,12 +107,12 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (_showAddEntry)
             {
-                ImGui.SeparatorText("Add New Entry:");
+                ImGui.SeparatorText(ImGuiTranslations.Get("Add New Entry:"));
                 ImGui.Spacing();
 
                 ImGui.BeginGroup();
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Graphic:");
+                ImGui.Text(ImGuiTranslations.Get("Graphic:"));
                 ImGui.SetNextItemWidth(70);
                 ImGui.InputText("##NewGraphic", ref _newGraphicInput, 10);
                 ImGui.EndGroup();
@@ -121,33 +121,33 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                 ImGui.BeginGroup();
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Hue (-1 for any):");
+                ImGui.Text(ImGuiTranslations.Get("Hue (-1 for any):"));
                 ImGui.SetNextItemWidth(50);
                 ImGui.InputText("##NewHue", ref _newHueInput, 10);
                 ImGui.EndGroup();
 
                 ImGui.BeginGroup();
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Max Amount:");
+                ImGui.Text(ImGuiTranslations.Get("Max Amount:"));
                 ImGui.SetNextItemWidth(100);
                 ImGui.InputText("##NewMaxAmount", ref _newMaxAmountInput, 10);
-                ImGuiComponents.Tooltip("Set to 0 for unlimited.");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Set to 0 for unlimited."));
                 ImGui.EndGroup();
 
                 ImGui.SameLine();
 
                 ImGui.BeginGroup();
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Restock Up To:");
+                ImGui.Text(ImGuiTranslations.Get("Restock Up To:"));
                 ImGui.SetNextItemWidth(100);
                 ImGui.InputText("##NewRestock", ref _newRestockInput, 10);
-                ImGuiComponents.Tooltip("Amount to restock up to when buying (0 = disabled)");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Amount to restock up to when buying (0 = disabled)"));
 
                 ImGui.EndGroup();
 
                 ImGui.Spacing();
 
-                if (ImGui.Button("Add##AddEntry"))
+                if (ImGui.Button(ImGuiTranslations.Get("Add") + "##AddBuyEntry"))
                 {
                     if (StringHelper.TryParseGraphic(_newGraphicInput, out int graphic))
                     {
@@ -183,7 +183,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel##AddEntry"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelBuyEntry"))
                 {
                     _showAddEntry = false;
                     _newGraphicInput = "";
@@ -198,7 +198,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             if (_buyEntries.Count == 0)
             {
                 ImGui.Separator();
-                ImGui.Text("No entries configured.");
+                ImGui.Text(ImGuiTranslations.Get("No entries configured."));
             }
             else
             {
@@ -206,12 +206,12 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 if (ImGui.BeginTable("AutoBuyTable", 7, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, ImGuiTheme.Dimensions.STANDARD_TABLE_SCROLL_HEIGHT)))
                 {
                     ImGui.TableSetupColumn(string.Empty, ImGuiTableColumnFlags.WidthFixed, 52);
-                    ImGui.TableSetupColumn("Graphic", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                    ImGui.TableSetupColumn("Hue", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                    ImGui.TableSetupColumn("Max Amount", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                    ImGui.TableSetupColumn("Restock Up To", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                    ImGui.TableSetupColumn("Enabled", ImGuiTableColumnFlags.WidthFixed, 60);
-                    ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 50);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Graphic"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Hue"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Max Amount"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Restock Up To"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Enabled"), ImGuiTableColumnFlags.WidthFixed, 60);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 50);
                     ImGui.TableHeadersRow();
 
                     for (int i = _buyEntries.Count - 1; i >= 0; i--)
@@ -301,7 +301,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                         // Actions
                         ImGui.TableNextColumn();
-                        if (ImGui.Button($"Delete##Delete{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Delete") + $"##DeleteBuy{i}"))
                         {
                             BuySellAgent.Instance?.DeleteConfig(entry);
                             // Clean up input dictionaries

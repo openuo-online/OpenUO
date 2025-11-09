@@ -8,7 +8,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
     public class AgentsWindow : SingletonImGuiWindow<AgentsWindow>
     {
         private readonly Profile _profile = ProfileManager.CurrentProfile;
-        private AgentsWindow() : base("Agents Tab")
+        private AgentsWindow() : base(ImGuiTranslations.Get("Agents"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
 
@@ -23,7 +23,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (_profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
@@ -31,29 +31,29 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (ImGui.BeginTabBar("##Agents Tabs", ImGuiTabBarFlags.None))
             {
-                if (ImGui.BeginTabItem("Auto Loot"))
+                if (ImGui.BeginTabItem(ImGuiTranslations.Get("Auto Loot")))
                 {
                     DrawAutoLoot();
                     ImGui.EndTabItem();
                 }
-                if (ImGui.BeginTabItem("Dress Agent"))
+                if (ImGui.BeginTabItem(ImGuiTranslations.Get("Dress Agent")))
                 {
                     DrawDressAgent();
                     ImGui.EndTabItem();
                 }
-                if (ImGui.BeginTabItem("Auto Buy"))
+                if (ImGui.BeginTabItem(ImGuiTranslations.Get("Auto Buy")))
                 {
                     DrawAutoBuy();
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Auto Sell"))
+                if (ImGui.BeginTabItem(ImGuiTranslations.Get("Auto Sell")))
                 {
                     DrawAutoSell();
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Bandage"))
+                if (ImGui.BeginTabItem(ImGuiTranslations.Get("Bandage")))
                 {
                     DrawBandageAgent();
                     ImGui.EndTabItem();

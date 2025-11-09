@@ -16,7 +16,7 @@ namespace ClassicUO.Game.UI.Gumps
         private const int GUMP_HEIGHT = 420;
         private SimpleProgressBar[] _healthBars = new SimpleProgressBar[10];
 
-        public PartyGump(World world, int x, int y, bool canloot) : base(world, x, y, GUMP_WIDTH, GUMP_HEIGHT, ModernUIConstants.ModernUIPanel, ModernUIConstants.ModernUIPanel_BoderSize, true, GUMP_WIDTH, GUMP_HEIGHT)
+        public PartyGump(World world, int x, int y, bool canloot) : base(world, (int)(x / Client.Game.GetScene<GameScene>().Scale), (int)(y / Client.Game.GetScene<GameScene>().Scale), GUMP_WIDTH, GUMP_HEIGHT, ModernUIConstants.ModernUIPanel, ModernUIConstants.ModernUIPanel_BoderSize, true, GUMP_WIDTH, GUMP_HEIGHT)
         {
             CanLoot = canloot;
 
@@ -89,7 +89,7 @@ namespace ClassicUO.Game.UI.Gumps
             int entryStartX = BorderSize + (entryAreaWidth - (buttonAreaWidth + nameAreaWidth + 120)) / 2;
 
             // Header labels with TTF font and orange color aligned with buttons
-            var msgLabel = TextBox.GetOne("Msg", TrueTypeLoader.EMBEDDED_FONT, 14, Color.Orange, TextBox.RTLOptions.Default());
+            var msgLabel = TextBox.GetOne(ResGumps.Msg, TrueTypeLoader.EMBEDDED_FONT, 14, Color.Orange, TextBox.RTLOptions.Default());
             msgLabel.X = entryStartX;
             msgLabel.Y = BorderSize + 17;
             msgLabel.AcceptMouseInput = false;
@@ -105,12 +105,12 @@ namespace ClassicUO.Game.UI.Gumps
             }
 
             // Center Party Manifest label with larger font
-            var partyManifestLabel = TextBox.GetOne(ResGumps.PartyManifest, TrueTypeLoader.EMBEDDED_FONT, 18, Color.Orange, TextBox.RTLOptions.Default());
+            var partyManifestLabel = TextBox.GetOne(ResGumps.PartyManifest, TrueTypeLoader.EMBEDDED_FONT, 16, Color.Orange, TextBox.RTLOptions.Default());
             partyManifestLabel.AcceptMouseInput = false;
-            Add(partyManifestLabel);
-            // Center the label horizontally in the gump
-            partyManifestLabel.X = BorderSize + (Width - BorderSize * 2 - partyManifestLabel.Width) / 2;
+            // Center the label horizontally in the gump - add extra padding to ensure full text is visible
+            partyManifestLabel.X = BorderSize + 10;
             partyManifestLabel.Y = BorderSize + 7;
+            Add(partyManifestLabel);
 
             bool isMemeber = World.Party.Leader != 0 && World.Party.Leader != World.Player;
 
@@ -123,7 +123,7 @@ namespace ClassicUO.Game.UI.Gumps
                 // Msg button
                 Add
                 (
-                    new NiceButton(currentX, yPtr + 2, 25, 20, ButtonAction.Activate, "Msg")
+                    new NiceButton(currentX, yPtr + 2, 25, 20, ButtonAction.Activate, ResGumps.Msg)
                     {
                         ButtonParameter = (int)(Buttons.TellMember + i),
                         IsSelectable = false
@@ -136,7 +136,7 @@ namespace ClassicUO.Game.UI.Gumps
                 {
                     Add
                     (
-                        new NiceButton(currentX, yPtr + 2, 25, 20, ButtonAction.Activate, "Kick", hue: 34)
+                        new NiceButton(currentX, yPtr + 2, 25, 20, ButtonAction.Activate, ResGumps.Kick, hue: 34)
                         {
                             ButtonParameter = (int)(Buttons.KickMember + i),
                             IsSelectable = false

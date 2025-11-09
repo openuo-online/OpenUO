@@ -18,7 +18,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private bool _editingName = false;
         private string _nameInput = "";
 
-        private DressAgentWindow() : base("Dress Agent")
+        private DressAgentWindow() : base(ImGuiTranslations.Get("Dress Agent"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
         }
@@ -27,15 +27,15 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (DressAgentManager.Instance == null)
             {
-                ImGui.Text("Dress Agent not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
             // Main layout: left panel for config list, right panel for details
             if (ImGui.BeginTable("DressAgentTable", 2, ImGuiTableFlags.Resizable))
             {
-                ImGui.TableSetupColumn("Configurations", ImGuiTableColumnFlags.WidthFixed);
-                ImGui.TableSetupColumn("Details", ImGuiTableColumnFlags.WidthStretch);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Configurations"), ImGuiTableColumnFlags.WidthFixed);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Details"), ImGuiTableColumnFlags.WidthStretch);
 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
@@ -50,12 +50,12 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
         private void DrawConfigList()
         {
-            ImGui.Text("Dress Configurations");
+            ImGui.Text(ImGuiTranslations.Get("Dress Configurations"));
 
             ImGui.Separator();
-            if (ImGui.Button("Add Configuration"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add Configuration") + "##DressAddConfig"))
             {
-                DressConfig newConfig = DressAgentManager.Instance.CreateNewConfig($"Config {DressAgentManager.Instance.CurrentPlayerConfigs.Count + 1}");
+                DressConfig newConfig = DressAgentManager.Instance.CreateNewConfig(string.Format(ImGuiTranslations.Get("Config {0}"), DressAgentManager.Instance.CurrentPlayerConfigs.Count + 1));
                 _selectedConfigIndex = DressAgentManager.Instance.CurrentPlayerConfigs.IndexOf(newConfig);
                 _selectedConfig = newConfig;
             }
@@ -69,7 +69,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 DressConfig config = configs[i];
                 bool isSelected = i == _selectedConfigIndex;
 
-                string label = $"{config.Name} ({config.Items.Count} items)##Config{i}";
+                string label = $"{config.Name} ({config.Items.Count}{ImGuiTranslations.Get(" items)")})##Config{i}";
 
                 if (ImGui.Selectable(label, isSelected))
                 {
@@ -81,7 +81,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 // Show character name as tooltip
                 if (ImGui.IsItemHovered() && !string.IsNullOrEmpty(config.CharacterName))
                 {
-                    SetTooltip($"Character: {config.CharacterName}");
+                    SetTooltip(ImGuiTranslations.Get("Character: ") + config.CharacterName);
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (_selectedConfig == null || _selectedConfigIndex == -1)
             {
-                ImGui.Text("Select a configuration to view details");
+                ImGui.Text(ImGuiTranslations.Get("Select a configuration to view details"));
                 return;
             }
 
@@ -113,45 +113,45 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
             else
             {
-                ImGui.Text($"Name: {_selectedConfig.Name}");
+                ImGui.Text(ImGuiTranslations.Get("Name: ") + _selectedConfig.Name);
                 ImGui.SameLine();
-                if (ImGui.Button("Edit##Name"))
+                if (ImGui.Button(ImGuiTranslations.Get("Edit") + "##EditName"))
                 {
                     _editingName = true;
                 }
             }
 
             // Action buttons
-            if (ImGui.Button("Dress"))
+            if (ImGui.Button(ImGuiTranslations.Get("Dress") + "##DressBtn"))
             {
                 DressAgentManager.Instance.DressFromConfig(_selectedConfig);
-                GameActions.Print($"Dressing from config: {_selectedConfig.Name}");
+                GameActions.Print(ImGuiTranslations.Get("Dressing from config: ") + _selectedConfig.Name);
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Undress"))
+            if (ImGui.Button(ImGuiTranslations.Get("Undress") + "##UndressBtn"))
             {
                 DressAgentManager.Instance.UndressFromConfig(_selectedConfig);
-                GameActions.Print($"Undressing from config: {_selectedConfig.Name}");
+                GameActions.Print(ImGuiTranslations.Get("Undressing from config: ") + _selectedConfig.Name);
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Create Dress Macro"))
+            if (ImGui.Button(ImGuiTranslations.Get("Create Dress Macro") + "##CreateDressMacro"))
             {
                 DressAgentManager.Instance.CreateDressMacro(_selectedConfig.Name);
-                GameActions.Print($"Created Dress Macro: {_selectedConfig.Name}");
+                GameActions.Print(ImGuiTranslations.Get("Created Dress Macro: ") + _selectedConfig.Name);
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Create Undress Macro"))
+            if (ImGui.Button(ImGuiTranslations.Get("Create Undress Macro") + "##CreateUndressMacro"))
             {
                 DressAgentManager.Instance.CreateUndressMacro(_selectedConfig.Name);
-                GameActions.Print($"Created Undress Macro: {_selectedConfig.Name}");
+                GameActions.Print(ImGuiTranslations.Get("Created Undress Macro: ") + _selectedConfig.Name);
             }
 
             ImGui.SameLine();
             ImGui.PushStyleColor(ImGuiCol.Button, DeleteButtonColor);
-            if (ImGui.Button("Delete"))
+            if (ImGui.Button(ImGuiTranslations.Get("Delete") + "##DeleteConfig"))
             {
                 DressAgentManager.Instance.DeleteConfig(_selectedConfig);
 
@@ -178,13 +178,13 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             // KR Equip Packet setting
             bool useKREquipPacket = _selectedConfig.UseKREquipPacket;
-            if (ImGui.Checkbox("Use KR Equip Packet (faster)", ref useKREquipPacket))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Use KR Equip Packet (faster)") + "##UseKRPacket", ref useKREquipPacket))
             {
                 _selectedConfig.UseKREquipPacket = useKREquipPacket;
                 DressAgentManager.Instance.Save();
             }
 
-            SetTooltip("Uses KR equip/unequip packets for faster operation");
+            SetTooltip(ImGuiTranslations.Get("Uses KR equip/unequip packets for faster operation"));
 
             ImGui.Separator();
 
@@ -200,87 +200,87 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
         private void DrawUndressBagSettings()
         {
-            ImGui.Text("Undress Bag Settings");
+            ImGui.Text(ImGuiTranslations.Get("Undress Bag Settings"));
 
-            if (ImGui.Button("Set Undress Bag"))
+            if (ImGui.Button(ImGuiTranslations.Get("Set Undress Bag") + "##SetUndressBag"))
             {
-                GameActions.Print("Select container for undressed items", 82);
+                GameActions.Print(ImGuiTranslations.Get("Select container for undressed items"), 82);
                 World.Instance.TargetManager.SetTargeting((target) =>
                 {
                     if (target == null || !(target is Entity entity) || !SerialHelper.IsItem(entity))
                     {
-                        GameActions.Print("Only items can be selected!");
+                        GameActions.Print(ImGuiTranslations.Get("Only items can be selected!"));
                         return;
                     }
 
                     // Safety check in case config was deleted during targeting
                     if (_selectedConfig == null)
                     {
-                        GameActions.Print("Configuration no longer available!");
+                        GameActions.Print(ImGuiTranslations.Get("Configuration no longer available!"));
                         return;
                     }
 
                     DressAgentManager.Instance.SetUndressBag(_selectedConfig, entity.Serial);
-                    GameActions.Print($"Undress bag set to {entity.Serial:X}", 63);
+                    GameActions.Print(ImGuiTranslations.Get("Undress bag set to ") + $"{entity.Serial:X}", 63);
                 });
             }
 
             ImGui.SameLine();
             if (_selectedConfig.UndressBagSerial != 0)
             {
-                ImGui.Text($"Current: ({_selectedConfig.UndressBagSerial:X})");
+                ImGui.Text(ImGuiTranslations.Get("Current: ") + $"({_selectedConfig.UndressBagSerial:X})");
                 ImGui.SameLine();
-                if (ImGui.Button("Clear##UndressBag"))
+                if (ImGui.Button(ImGuiTranslations.Get("Clear") + "##ClearUndressBag"))
                 {
                     DressAgentManager.Instance.SetUndressBag(_selectedConfig, 0);
                 }
             }
             else
             {
-                ImGui.TextColored(DefaultInfoColor, "Default: Your backpack");
+                ImGui.TextColored(DefaultInfoColor, ImGuiTranslations.Get("Default: Your backpack"));
             }
         }
 
         private void DrawItemsSection()
         {
-            ImGui.Text("Items to Dress/Undress");
+            ImGui.Text(ImGuiTranslations.Get("Items to Dress/Undress"));
 
             // Add item buttons
-            if (ImGui.Button("Add Currently Equipped"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add Currently Equipped") + "##AddEquipped"))
             {
                 DressAgentManager.Instance.AddCurrentlyEquippedItems(_selectedConfig);
-                GameActions.Print("Added currently equipped items to config");
+                GameActions.Print(ImGuiTranslations.Get("Added currently equipped items to config"));
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Target Item to Add"))
+            if (ImGui.Button(ImGuiTranslations.Get("Target Item to Add") + "##TargetItem"))
             {
-                GameActions.Print("Target an item to add to this config", 82);
+                GameActions.Print(ImGuiTranslations.Get("Target an item to add to this config"), 82);
                 World.Instance.TargetManager.SetTargeting((obj) =>
                 {
                     if (obj == null || !(obj is Entity entity) || !SerialHelper.IsItem(entity))
                     {
-                        GameActions.Print("Only items can be added!");
+                        GameActions.Print(ImGuiTranslations.Get("Only items can be added!"));
                         return;
                     }
 
                     // Safety check in case config was deleted during targeting
                     if (_selectedConfig == null)
                     {
-                        GameActions.Print("Configuration no longer available!");
+                        GameActions.Print(ImGuiTranslations.Get("Configuration no longer available!"));
                         return;
                     }
 
                     DressAgentManager.Instance.AddItemToConfig(_selectedConfig, entity.Serial, entity.Name);
-                    GameActions.Print($"Added item: {entity.Name}");
+                    GameActions.Print(ImGuiTranslations.Get("Added item: ") + entity.Name);
                 });
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Clear All Items"))
+            if (ImGui.Button(ImGuiTranslations.Get("Clear All Items") + "##ClearItems"))
             {
                 DressAgentManager.Instance.ClearConfig(_selectedConfig);
-                GameActions.Print("Cleared all items from config");
+                GameActions.Print(ImGuiTranslations.Get("Cleared all items from config"));
             }
 
             ImGui.Separator();
@@ -289,10 +289,10 @@ namespace ClassicUO.Game.UI.ImGuiControls
             // Iterate in reverse to safely handle deletions during iteration
             if (ImGui.BeginTable("ItemsTable", 4, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, ImGuiTheme.Dimensions.STANDARD_TABLE_SCROLL_HEIGHT)))
             {
-                ImGui.TableSetupColumn("Serial", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthStretch);
-                ImGui.TableSetupColumn("Layer", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                ImGui.TableSetupColumn("Del", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Serial"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Name"), ImGuiTableColumnFlags.WidthStretch);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Layer"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Del"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
                 ImGui.TableHeadersRow();
 
                 for (int i = _selectedConfig.Items.Count - 1; i >= 0; i--)
@@ -311,14 +311,14 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                     ImGui.TableSetColumnIndex(3);
                     ImGui.PushStyleColor(ImGuiCol.Button, DeleteButtonColor);
-                    if (ImGui.Button($"X##Delete{i}"))
+                    if (ImGui.Button($"X##DeleteDress{i}"))
                     {
                         DressAgentManager.Instance.RemoveItemFromConfig(_selectedConfig, item.Serial);
                     }
 
                     if (ImGui.IsItemHovered())
                     {
-                        SetTooltip("Remove this item");
+                        SetTooltip(ImGuiTranslations.Get("Remove this item"));
                     }
 
                     ImGui.PopStyleColor();

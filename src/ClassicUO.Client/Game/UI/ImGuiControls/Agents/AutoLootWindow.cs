@@ -33,7 +33,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private Dictionary<string, string> entryDestinationInputs = new Dictionary<string, string>();
         private bool showCharacterImportPopup = false;
 
-        private AutoLootWindow() : base("Auto Loot")
+        private AutoLootWindow() : base(ImGuiTranslations.Get("Auto Loot"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             profile = ProfileManager.CurrentProfile;
@@ -51,58 +51,58 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
             // Main settings
             ImGui.Spacing();
-            if (ImGui.Checkbox("Enable Auto Loot", ref enableAutoLoot))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable Auto Loot") + "##AutoLootEnable", ref enableAutoLoot))
             {
                 profile.EnableAutoLoot = enableAutoLoot;
             }
-            ImGuiComponents.Tooltip("Auto Loot allows you to automatically pick up items from corpses based on configured criteria.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Auto Loot allows you to automatically pick up items from corpses based on configured criteria."));
 
             ImGui.SameLine();
 
-            if (ImGui.Button("Set Grab Bag"))
+            if (ImGui.Button(ImGuiTranslations.Get("Set Grab Bag") + "##AutoLootSetBag"))
             {
-                GameActions.Print(Client.Game.UO.World, "Target container to grab items into");
+                GameActions.Print(Client.Game.UO.World, ImGuiTranslations.Get("Target container to grab items into"));
                 Client.Game.UO.World.TargetManager.SetTargeting(CursorTarget.SetGrabBag, 0, TargetType.Neutral);
             }
             ImGui.SameLine();
 
-            ImGuiComponents.Tooltip("Choose a container to grab items into");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Choose a container to grab items into"));
 
-            ImGui.SeparatorText("Options:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Options:"));
 
-            if (ImGui.Checkbox("Enable Scavenger", ref enableScavenger))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable Scavenger") + "##AutoLootScavenger", ref enableScavenger))
             {
                 profile.EnableScavenger = enableScavenger;
             }
             ImGui.SameLine();
 
-            ImGuiComponents.Tooltip("Scavenger option allows to pick objects from ground.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Scavenger option allows to pick objects from ground."));
 
-            if (ImGui.Checkbox("Enable progress bar", ref enableProgressBar))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable progress bar") + "##AutoLootProgressBar", ref enableProgressBar))
             {
                 profile.EnableAutoLootProgressBar = enableProgressBar;
             }
             ImGui.SameLine();
 
-            ImGuiComponents.Tooltip("Shows a progress bar gump.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Shows a progress bar gump."));
 
 
-            if (ImGui.Checkbox("Auto loot human corpses", ref autoLootHumanCorpses))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Auto loot human corpses") + "##AutoLootHuman", ref autoLootHumanCorpses))
             {
                 profile.AutoLootHumanCorpses = autoLootHumanCorpses;
             }
             ImGui.SameLine();
 
-            ImGuiComponents.Tooltip("Auto loots human corpses.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Auto loots human corpses."));
 
             // Buttons for grab bag and import/export
-            ImGui.SeparatorText("Import & Export:");
-            if (ImGui.Button("Export JSON"))
+            ImGui.SeparatorText(ImGuiTranslations.Get("Import & Export:"));
+            if (ImGui.Button(ImGuiTranslations.Get("Export JSON") + "##AutoLootExport"))
             {
                 FileSelector.ShowFileBrowser(Client.Game.UO.World, FileSelectorType.Directory, null, null, (selectedPath) =>
                 {
@@ -114,7 +114,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Import JSON"))
+            if (ImGui.Button(ImGuiTranslations.Get("Import JSON") + "##AutoLootImport"))
             {
                 FileSelector.ShowFileBrowser(Client.Game.UO.World, FileSelectorType.File, null, new[] { "json" }, (selectedFile) =>
                 {
@@ -130,20 +130,20 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Import from Character"))
+            if (ImGui.Button(ImGuiTranslations.Get("Import from Character") + "##AutoLootImportChar"))
             {
                 showCharacterImportPopup = true;
             }
 
             // Add entry section
-            ImGui.SeparatorText("Entries:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Entries:"));
 
-            if (ImGui.Button("Add Manual Entry"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add Manual Entry") + "##AutoLootAddManual"))
             {
                 showAddEntry = !showAddEntry;
             }
             ImGui.SameLine();
-            if (ImGui.Button("Add from Target"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add from Target") + "##AutoLootAddTarget"))
             {
                 World.Instance.TargetManager.SetTargeting((targetedItem) =>
                 {
@@ -160,14 +160,14 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (showAddEntry)
             {
-                ImGui.SeparatorText("Add New Entry:");
+                ImGui.SeparatorText(ImGuiTranslations.Get("Add New Entry:"));
                 ImGui.Spacing();
 
                 ImGui.BeginGroup();
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Graphic:");
+                ImGui.Text(ImGuiTranslations.Get("Graphic:"));
                 ImGui.SameLine();
-                ImGuiComponents.Tooltip("Item Graphic");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Item Graphic"));
                 ImGui.SetNextItemWidth(70);
                 ImGui.InputText("##NewGraphic", ref newGraphicInput, 10);
                 ImGui.EndGroup();
@@ -176,20 +176,20 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                 ImGui.BeginGroup();
                 ImGui.AlignTextToFramePadding();
-                ImGui.Text("Hue:");
+                ImGui.Text(ImGuiTranslations.Get("Hue:"));
                 ImGui.SameLine();
 
-                ImGuiComponents.Tooltip("Set -1 to match any Hue");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Set -1 to match any Hue"));
                 ImGui.SetNextItemWidth(70);
                 ImGui.InputText("##NewHue", ref newHueInput, 10);
                 ImGui.EndGroup();
 
-                ImGui.Text("Regex:");
+                ImGui.Text(ImGuiTranslations.Get("Regex:"));
                 ImGui.InputText("##NewRegex", ref newRegexInput, 500);
 
                 ImGui.Spacing();
 
-                if (ImGui.Button("Add##AddEntry"))
+                if (ImGui.Button(ImGuiTranslations.Get("Add") + "##AddEntry"))
                 {
                     if (StringHelper.TryParseGraphic(newGraphicInput, out int graphic))
                     {
@@ -210,7 +210,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel##AddEntry"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##AddEntryCancel"))
                 {
                     showAddEntry = false;
                     newGraphicInput = "";
@@ -219,23 +219,23 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 }
             }
 
-            ImGui.SeparatorText("Current Auto Loot Entries:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Current Auto Loot Entries:"));
             // List of current entries
 
             if (lootEntries.Count == 0)
             {
-                ImGui.Text("No entries configured");
+                ImGui.Text(ImGuiTranslations.Get("No entries configured"));
             }
             else
             // Table headers
             if (ImGui.BeginTable("AutoLootTable", 6, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, ImGuiTheme.Dimensions.STANDARD_TABLE_SCROLL_HEIGHT)))
             {
                 ImGui.TableSetupColumn(string.Empty, ImGuiTableColumnFlags.WidthFixed, 52);
-                ImGui.TableSetupColumn("Graphic", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                ImGui.TableSetupColumn("Hue", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                ImGui.TableSetupColumn("Regex", ImGuiTableColumnFlags.WidthFixed, 60);
-                ImGui.TableSetupColumn("Destination", ImGuiTableColumnFlags.WidthFixed, 150);
-                ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 60);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Graphic"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Hue"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Regex"), ImGuiTableColumnFlags.WidthFixed, 60);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Destination"), ImGuiTableColumnFlags.WidthFixed, 150);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 60);
                 ImGui.TableHeadersRow();
 
                 for (int i = lootEntries.Count - 1; i >= 0; i--)

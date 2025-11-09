@@ -15,7 +15,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private bool showAddFriendPopup = false;
         private string newFriendName = "";
 
-        private FriendsListWindow() : base("Friends List")
+        private FriendsListWindow() : base(ImGuiTranslations.Get("Friends List"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             RefreshFriendsList();
@@ -28,58 +28,58 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.Spacing();
 
             // Header information
-            ImGui.Text("Manage your friends list.");
+            ImGui.Text(ImGuiTranslations.Get("Manage your friends list."));
             ImGui.Spacing();
 
             // Add friend buttons
-            if (ImGui.Button("Add by Target"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add by Target") + "##FriendsAddTarget"))
             {
-                GameActions.Print(World.Instance, "Target a player to add to friends list");
+                GameActions.Print(World.Instance, ImGuiTranslations.Get("Target a player to add to friends list"));
                 World.Instance.TargetManager.SetTargeting(targeted =>
                 {
                     if (targeted != null && targeted is Mobile mobile)
                     {
                         if (FriendsListManager.Instance.AddFriend(mobile))
                         {
-                            GameActions.Print(World.Instance, $"Added {mobile.Name} to friends list");
+                            GameActions.Print(World.Instance, string.Format(ImGuiTranslations.Get("Added {0} to friends list"), mobile.Name));
                             RefreshFriendsList();
                         }
                         else
                         {
-                            GameActions.Print(World.Instance, $"Could not add {mobile.Name} - already in friends list");
+                            GameActions.Print(World.Instance, string.Format(ImGuiTranslations.Get("Could not add {0} - already in friends list"), mobile.Name));
                         }
                     }
                     else
                     {
-                        GameActions.Print(World.Instance, "Invalid target - must be a player");
+                        GameActions.Print(World.Instance, ImGuiTranslations.Get("Invalid target - must be a player"));
                     }
                 });
             }
 
             ImGui.SameLine();
 
-            if (ImGui.Button("Add by Name"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add by Name") + "##FriendsAddName"))
             {
                 showAddFriendPopup = true;
             }
 
             ImGui.Spacing();
-            ImGui.SeparatorText("Current Friends:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Current Friends:"));
 
             // Display friends list
             if (friendEntries.Count == 0)
             {
-                ImGui.Text("No friends added yet.");
+                ImGui.Text(ImGuiTranslations.Get("No friends added yet."));
             }
             else
             {
                 // Table for friends list
                 if (ImGui.BeginTable("FriendsTable", 4, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, ImGuiTheme.Dimensions.STANDARD_TABLE_SCROLL_HEIGHT)))
                 {
-                    ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthStretch);
-                    ImGui.TableSetupColumn("Serial", ImGuiTableColumnFlags.WidthFixed, 100);
-                    ImGui.TableSetupColumn("Date Added", ImGuiTableColumnFlags.WidthFixed, 120);
-                    ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 80);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Name"), ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Serial"), ImGuiTableColumnFlags.WidthFixed, 100);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Date Added"), ImGuiTableColumnFlags.WidthFixed, 120);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 80);
                     ImGui.TableHeadersRow();
 
                     for (int i = friendEntries.Count - 1; i >= 0; i--)
@@ -88,7 +88,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                         ImGui.TableNextRow();
 
                         ImGui.TableNextColumn();
-                        ImGui.Text(friend.Name ?? "Unknown");
+                        ImGui.Text(friend.Name ?? ImGuiTranslations.Get("Unknown"));
 
                         ImGui.TableNextColumn();
                         if (friend.Serial != 0)
@@ -104,7 +104,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                         ImGui.Text(friend.DateAdded.ToString("yyyy-MM-dd"));
 
                         ImGui.TableNextColumn();
-                        if (ImGui.Button($"Remove##{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Remove") + $"##{i}"))
                         {
                             bool removed = friend.Serial != 0
                                 ? FriendsListManager.Instance.RemoveFriend(friend.Serial)
@@ -112,7 +112,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                             if (removed)
                             {
-                                GameActions.Print(World.Instance, $"Removed {friend.Name} from friends list");
+                                GameActions.Print(World.Instance, string.Format(ImGuiTranslations.Get("Removed {0} from friends list"), friend.Name));
                                 RefreshFriendsList();
                             }
                         }
@@ -125,39 +125,39 @@ namespace ClassicUO.Game.UI.ImGuiControls
             // Add friend by name popup
             if (showAddFriendPopup)
             {
-                ImGui.OpenPopup("Add Friend by Name");
+                ImGui.OpenPopup(ImGuiTranslations.Get("Add Friend by Name") + "##AddFriendPopup");
                 showAddFriendPopup = false;
             }
 
-            if (ImGui.BeginPopupModal("Add Friend by Name"))
+            if (ImGui.BeginPopupModal(ImGuiTranslations.Get("Add Friend by Name") + "##AddFriendPopup"))
             {
-                ImGui.Text("Enter friend's name:");
+                ImGui.Text(ImGuiTranslations.Get("Enter friend's name:"));
                 ImGui.SetNextItemWidth(200);
                 ImGui.InputText("##FriendName", ref newFriendName, 100);
 
                 ImGui.Spacing();
 
-                if (ImGui.Button("Add"))
+                if (ImGui.Button(ImGuiTranslations.Get("Add") + "##FriendAddBtn"))
                 {
                     if (!string.IsNullOrWhiteSpace(newFriendName))
                     {
                         if (FriendsListManager.Instance.AddFriend(0, newFriendName.Trim()))
                         {
-                            GameActions.Print(World.Instance, $"Added {newFriendName.Trim()} to friends list");
+                            GameActions.Print(World.Instance, string.Format(ImGuiTranslations.Get("Added {0} to friends list"), newFriendName.Trim()));
                             RefreshFriendsList();
                             newFriendName = "";
                             ImGui.CloseCurrentPopup();
                         }
                         else
                         {
-                            GameActions.Print(World.Instance, $"Could not add {newFriendName.Trim()} - already in friends list or invalid name");
+                            GameActions.Print(World.Instance, string.Format(ImGuiTranslations.Get("Could not add {0} - already in friends list or invalid name"), newFriendName.Trim()));
                         }
                     }
                 }
 
                 ImGui.SameLine();
 
-                if (ImGui.Button("Cancel"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##FriendCancelBtn"))
                 {
                     newFriendName = "";
                     ImGui.CloseCurrentPopup();

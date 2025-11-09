@@ -18,7 +18,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private Dictionary<ushort, string> entryReplacementInputs = new Dictionary<ushort, string>();
         private Dictionary<ushort, string> entryHueInputs = new Dictionary<ushort, string>();
 
-        private GraphicReplacementWindow() : base("Mobile Graphics Replacement")
+        private GraphicReplacementWindow() : base(ImGuiTranslations.Get("Mobile Graphics Replacement"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
         }
@@ -26,20 +26,20 @@ namespace ClassicUO.Game.UI.ImGuiControls
         public override void DrawContent()
         {
             ImGui.Spacing();
-            ImGuiComponents.Tooltip("This can be used to replace graphics of mobiles with other graphics (For example if dragons are too big, replace them with wyverns).");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("This can be used to replace graphics of mobiles with other graphics (For example if dragons are too big, replace them with wyverns)."));
 
             ImGui.Spacing();
 
-            ImGui.SeparatorText("Options:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Options:"));
 
             // Add entry section
-            if (ImGui.Button("Add Entry"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add Entry") + "##AddGraphicEntry"))
             {
                 showAddEntry = !showAddEntry;
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Target Entity"))
+            if (ImGui.Button(ImGuiTranslations.Get("Target Entity") + "##TargetEntity"))
             {
                 World.Instance.TargetManager.SetTargeting((targetedEntity) =>
                 {
@@ -60,10 +60,10 @@ namespace ClassicUO.Game.UI.ImGuiControls
             if (showAddEntry)
             {
                 ImGui.Spacing();
-                ImGui.SeparatorText("New Entry:");
+                ImGui.SeparatorText(ImGuiTranslations.Get("New Entry:"));
                 ImGui.Spacing();
                 ImGui.BeginGroup();
-                ImGui.Text("Original Graphic:");
+                ImGui.Text(ImGuiTranslations.Get("Original Graphic:"));
                 ImGui.SetNextItemWidth(150);
                 ImGui.InputText("##NewOriginalGraphic", ref newOriginalGraphicInput, 10);
                 ImGui.EndGroup();
@@ -71,18 +71,18 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 ImGui.SameLine();
 
                 ImGui.BeginGroup();
-                ImGui.Text("Replacement Graphic:");
+                ImGui.Text(ImGuiTranslations.Get("Replacement Graphic:"));
                 ImGui.SetNextItemWidth(150);
                 ImGui.InputText("##NewReplacementGraphic", ref newReplacementGraphicInput, 10);
                 ImGui.EndGroup();
 
                 ImGui.Spacing();
-                ImGui.Text("New Hue (-1 to leave original):");
+                ImGui.Text(ImGuiTranslations.Get("New Hue (-1 to leave original):"));
                 ImGui.SetNextItemWidth(150);
                 ImGui.InputText("##NewHue", ref newHueInput, 10);
 
                 ImGui.Spacing();
-                if (ImGui.Button("Add##AddEntry"))
+                if (ImGui.Button(ImGuiTranslations.Get("Add") + "##AddGraphicReplace"))
                 {
                     if (StringHelper.TryParseGraphic(newOriginalGraphicInput, out int originalGraphic) &&
                         StringHelper.TryParseGraphic(newReplacementGraphicInput, out int replacementGraphic))
@@ -109,7 +109,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel##AddEntry"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelGraphicEntry"))
                 {
                     showAddEntry = false;
                     newOriginalGraphicInput = "";
@@ -121,22 +121,22 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.Separator();
 
             // List of current filters
-            ImGui.Text("Current Graphic Replacements:");
+            ImGui.Text(ImGuiTranslations.Get("Current Graphic Replacements:"));
 
             Dictionary<ushort, GraphicChangeFilter> filters = GraphicsReplacement.GraphicFilters;
             if (filters.Count == 0)
             {
-                ImGui.Text("No replacements configured");
+                ImGui.Text(ImGuiTranslations.Get("No replacements configured"));
             }
             else
             {
                 // Table headers
                 if (ImGui.BeginTable("GraphicReplacementTable", 4, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, ImGuiTheme.Dimensions.STANDARD_TABLE_SCROLL_HEIGHT)))
                 {
-                    ImGui.TableSetupColumn("Original Graphic", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                    ImGui.TableSetupColumn("Replacement Graphic", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                    ImGui.TableSetupColumn("New Hue", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
-                    ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Original Graphic"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Replacement Graphic"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("New Hue"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, ImGuiTheme.Dimensions.STANDARD_INPUT_WIDTH);
                     ImGui.TableHeadersRow();
 
                     var filterList = filters.Values.ToList();
@@ -199,7 +199,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                         }
 
                         ImGui.TableNextColumn();
-                        if (ImGui.Button($"Delete##Delete{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Delete") + $"##DeleteGraphic{i}"))
                         {
                             GraphicsReplacement.DeleteFilter(filter.OriginalGraphic);
                             // Clean up input dictionaries

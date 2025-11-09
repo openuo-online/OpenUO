@@ -203,13 +203,13 @@ while True:
 
         private void DrawMenuBar()
         {
-            if (ImGui.Button(ImGuiTranslations.Get("Menu")))
+            if (ImGui.Button(ImGuiTranslations.Get("Menu") + "##MenuBtn"))
             {
                 ImGui.OpenPopup("ScriptManagerMenu");
 
             }
             ImGui.SameLine();
-            if (ImGui.Button(ImGuiTranslations.Get("Add +")))
+            if (ImGui.Button(ImGuiTranslations.Get("Add +") + "##AddBtn"))
             {
                 _showContextMenu = true;
                 _contextMenuGroup = ""; // Root level
@@ -955,7 +955,7 @@ while True:
 
                 ImGui.Separator();
 
-                if (ImGui.Button(ImGuiTranslations.Get("Create")))
+                if (ImGui.Button(ImGuiTranslations.Get("Create") + "##CreateScript"))
                 {
                     if (!string.IsNullOrEmpty(_dialogState.NewScriptName))
                     {
@@ -1064,7 +1064,7 @@ while True:
 
                 ImGui.SameLine();
 
-                if (ImGui.Button(ImGuiTranslations.Get("Cancel")))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelScript"))
                 {
                     _dialogState.NewScriptName = "";
                     _dialogState.ShowNewScript = false;
@@ -1086,7 +1086,7 @@ while True:
 
                 ImGui.Separator();
 
-                if (ImGui.Button(ImGuiTranslations.Get("Create")))
+                if (ImGui.Button(ImGuiTranslations.Get("Create") + "##CreateGroup"))
                 {
                     if (!string.IsNullOrEmpty(_dialogState.NewGroupName))
                     {
@@ -1175,7 +1175,7 @@ while True:
 
                 ImGui.SameLine();
 
-                if (ImGui.Button(ImGuiTranslations.Get("Cancel")))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##CancelGroup"))
                 {
                     _dialogState.NewGroupName = "";
                     _dialogState.ShowNewGroup = false;

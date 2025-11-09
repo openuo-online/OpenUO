@@ -14,7 +14,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private int hpPercentage;
         private bool checkForBuff, useNewPacket, checkPoisoned, checkHidden, checkInvul, healfriends, dexFormula, disableSelfHeal;
 
-        private BandageAgentWindow() : base("Bandage Agent")
+        private BandageAgentWindow() : base(ImGuiTranslations.Get("Bandage"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             profile = ProfileManager.CurrentProfile;
@@ -38,24 +38,24 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
-            ImGui.TextWrapped("Automatically use bandages to heal when HP drops below threshold.");
+            ImGui.TextWrapped(ImGuiTranslations.Get("Automatically use bandages to heal when HP drops below threshold."));
             ImGui.Separator();
 
             // Enable bandage agent checkbox
-            if (ImGui.Checkbox("Enable bandage agent", ref enabled))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable bandage agent") + "##EnableBandage", ref enabled))
                 profile.EnableBandageAgent = enabled;
 
             ImGui.SameLine();
-            if (ImGui.Checkbox("Bandage friends", ref healfriends))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Bandage friends") + "##BandageFriends", ref healfriends))
                 profile.BandageAgentBandageFriends = healfriends;
 
-            if (ImGui.Checkbox("Disable self heal", ref disableSelfHeal))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Disable self heal") + "##DisableSelfHeal", ref disableSelfHeal))
                 profile.BandageAgentDisableSelfHeal = disableSelfHeal;
-            ImGuiComponents.Tooltip("When enabled, bandage agent will only heal friends and not yourself");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("When enabled, bandage agent will only heal friends and not yourself"));
 
             ImGui.Separator();
 
@@ -68,50 +68,50 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 }
             }
             ImGui.SameLine();
-            ImGui.Text("Delay (ms):");
-            ImGuiComponents.Tooltip("Delay between bandage attempts in milliseconds (50-30000)");
+            ImGui.Text(ImGuiTranslations.Get("Delay (ms):"));
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Delay between bandage attempts in milliseconds (50-30000)"));
             //ImGui.SameLine();
-            if (ImGui.Checkbox("Use Dex Formula", ref dexFormula))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Use Dex Formula") + "##UseDexFormula", ref dexFormula))
             {
                 profile.BandageAgentUseDexFormula = dexFormula;
             }
-            ImGuiComponents.Tooltip("Use the dex formula instead of a set delay");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Use the dex formula instead of a set delay"));
 
             // HP percentage threshold slider
-            if (ImGui.SliderInt("HP percentage threshold", ref hpPercentage, 10, 95))
+            if (ImGui.SliderInt(ImGuiTranslations.Get("HP percentage threshold") + "##HPThreshold", ref hpPercentage, 10, 95))
             {
                 profile.BandageAgentHPPercentage = hpPercentage;
             }
-            ImGuiComponents.Tooltip("Heal when HP drops below this percentage");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Heal when HP drops below this percentage"));
 
             ImGui.Separator();
 
             // Use bandaging buff checkbox
-            if (ImGui.Checkbox("Use bandaging buff instead of delay", ref checkForBuff))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Use bandaging buff instead of delay") + "##UseBuff", ref checkForBuff))
             {
                 profile.BandageAgentCheckForBuff = checkForBuff;
             }
 
             // Use new bandage packet checkbox
-            if (ImGui.Checkbox("Use new bandage packet", ref useNewPacket))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Use new bandage packet") + "##UseNewPacket", ref useNewPacket))
             {
                 profile.BandageAgentUseNewPacket = useNewPacket;
             }
 
             // Bandage if poisoned checkbox
-            if (ImGui.Checkbox("Bandage if Poisoned", ref checkPoisoned))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Bandage if Poisoned") + "##BandagePoisoned", ref checkPoisoned))
             {
                 profile.BandageAgentCheckPoisoned = checkPoisoned;
             }
 
             // Skip bandage if hidden checkbox
-            if (ImGui.Checkbox("Skip Bandage if Hidden", ref checkHidden))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Skip Bandage if Hidden") + "##SkipHidden", ref checkHidden))
             {
                 profile.BandageAgentCheckHidden = checkHidden;
             }
 
             // Skip bandage if yellow hits checkbox
-            if (ImGui.Checkbox("Skip Bandage if yellow hits", ref checkInvul))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Skip Bandage if yellow hits") + "##SkipYellow", ref checkInvul))
             {
                 profile.BandageAgentCheckInvul = checkInvul;
             }
@@ -119,7 +119,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.Separator();
 
             // Bandage graphic ID input
-            ImGui.Text("Bandage graphic ID:");
+            ImGui.Text(ImGuiTranslations.Get("Bandage graphic ID:"));
             ImGui.SameLine();
             if (ImGui.InputText("##BandageGraphic", ref _bandageGraphicInput, 10))
             {
@@ -128,7 +128,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     profile.BandageAgentGraphic = graphic;
                 }
             }
-            ImGuiComponents.Tooltip("Graphic ID of bandages to use (default: 0x0E21). Accepts hex (0x0E21) or decimal (3617)");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Graphic ID of bandages to use (default: 0x0E21). Accepts hex (0x0E21) or decimal (3617)"));
         }
 
         private bool TryParseBandageGraphic(string text, out ushort graphic)

@@ -24,7 +24,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private Dictionary<int, string> spellMaxDurationInputs = new Dictionary<int, string>();
         private SpellRangeInfo selectedSpell = null;
 
-        private SpellIndicatorWindow() : base("Spell Indicators")
+        private SpellIndicatorWindow() : base(ImGuiTranslations.Get("Spell Indicators"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             profile = ProfileManager.CurrentProfile;
@@ -35,21 +35,21 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
             ImGui.Spacing();
 
-            if (ImGui.Checkbox("Enable Spell Indicators", ref enableSpellIndicators))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable Spell Indicators") + "##EnableSpellInd", ref enableSpellIndicators))
             {
                 profile.EnableSpellIndicators = enableSpellIndicators;
             }
-            ImGuiComponents.Tooltip("Enable visual spell range indicators that show casting range and area of effect for spells.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Enable visual spell range indicators that show casting range and area of effect for spells."));
 
-            ImGui.SeparatorText("Spell Search:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Spell Search:"));
 
-            ImGui.Text("Spell search:");
+            ImGui.Text(ImGuiTranslations.Get("Spell search:"));
             ImGui.SetNextItemWidth(250);
             if (ImGui.InputText("##SpellSearch", ref spellSearchInput, 100))
             {
@@ -71,21 +71,21 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 }
             }
             ImGui.SameLine();
-            if (ImGui.Button("Clear"))
+            if (ImGui.Button(ImGuiTranslations.Get("Clear") + "##ClearSpellSearch"))
             {
                 spellSearchInput = "";
                 selectedSpell = null;
             }
-            ImGuiComponents.Tooltip("Type a spell name to search and edit its spell indicator settings.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Type a spell name to search and edit its spell indicator settings."));
 
             if (selectedSpell != null)
             {
-                ImGui.SeparatorText("Spell Configuration:");
+                ImGui.SeparatorText(ImGuiTranslations.Get("Spell Configuration:"));
                 DrawSpellEditor(selectedSpell);
             }
             else if (string.IsNullOrWhiteSpace(spellSearchInput))
             {
-                ImGui.SeparatorText("All Spell Indicators:");
+                ImGui.SeparatorText(ImGuiTranslations.Get("All Spell Indicators:"));
                 DrawSpellTable();
             }
         }
@@ -112,13 +112,13 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (ImGui.BeginTable("SpellEditorTable", 2, ImGuiTableFlags.SizingFixedFit))
             {
-                ImGui.TableSetupColumn("Property", ImGuiTableColumnFlags.WidthFixed, 120);
-                ImGui.TableSetupColumn("Value", ImGuiTableColumnFlags.WidthStretch);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Property"), ImGuiTableColumnFlags.WidthFixed, 120);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Value"), ImGuiTableColumnFlags.WidthStretch);
 
                 // Name
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Name:");
+                ImGui.Text(ImGuiTranslations.Get("Name:"));
                 ImGui.TableNextColumn();
                 string nameStr = spellNameInputs[spell.ID];
                 ImGui.SetNextItemWidth(200);
@@ -132,7 +132,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 // Power Words
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Power Words:");
+                ImGui.Text(ImGuiTranslations.Get("Power Words:"));
                 ImGui.TableNextColumn();
                 string powerWordsStr = spellPowerWordsInputs[spell.ID];
                 ImGui.SetNextItemWidth(200);
@@ -142,12 +142,12 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     spell.PowerWords = powerWordsStr;
                     SaveSpell();
                 }
-                ImGuiComponents.Tooltip("Power words must be exact, this is the best way we can detect spells.");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Power words must be exact, this is the best way we can detect spells."));
 
                 // Cursor Size
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Cursor Size:");
+                ImGui.Text(ImGuiTranslations.Get("Cursor Size:"));
                 ImGui.TableNextColumn();
                 string cursorSizeStr = spellCursorSizeInputs[spell.ID];
                 ImGui.SetNextItemWidth(100);
@@ -160,12 +160,12 @@ namespace ClassicUO.Game.UI.ImGuiControls
                         SaveSpell();
                     }
                 }
-                ImGuiComponents.Tooltip("This is the area to show around the cursor, intended for area spells that affect the area near your target.");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("This is the area to show around the cursor, intended for area spells that affect the area near your target."));
 
                 // Cast Range
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Cast Range:");
+                ImGui.Text(ImGuiTranslations.Get("Cast Range:"));
                 ImGui.TableNextColumn();
                 string castRangeStr = spellCastRangeInputs[spell.ID];
                 ImGui.SetNextItemWidth(100);
@@ -182,7 +182,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 // Cast Time
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Cast Time:");
+                ImGui.Text(ImGuiTranslations.Get("Cast Time:"));
                 ImGui.TableNextColumn();
                 string castTimeStr = spellCastTimeInputs[spell.ID];
                 ImGui.SetNextItemWidth(100);
@@ -199,7 +199,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 // Max Duration
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Max Duration:");
+                ImGui.Text(ImGuiTranslations.Get("Max Duration:"));
                 ImGui.TableNextColumn();
                 string maxDurationStr = spellMaxDurationInputs[spell.ID];
                 ImGui.SetNextItemWidth(100);
@@ -212,12 +212,12 @@ namespace ClassicUO.Game.UI.ImGuiControls
                         SaveSpell();
                     }
                 }
-                ImGuiComponents.Tooltip("This is a fallback in-case the spell detection fails.");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("This is a fallback in-case the spell detection fails."));
 
                 // Cursor Hue
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Cursor Hue:");
+                ImGui.Text(ImGuiTranslations.Get("Cursor Hue:"));
                 ImGui.TableNextColumn();
                 int cursorHueInt = spell.CursorHue;
                 ImGui.SetNextItemWidth(100);
@@ -233,7 +233,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 // Range Hue
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Range Hue:");
+                ImGui.Text(ImGuiTranslations.Get("Range Hue:"));
                 ImGui.TableNextColumn();
                 int rangeHueInt = spell.Hue;
                 ImGui.SetNextItemWidth(100);
@@ -249,7 +249,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                 // Checkboxes
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Is Linear:");
+                ImGui.Text(ImGuiTranslations.Get("Is Linear:"));
                 ImGui.TableNextColumn();
                 bool isLinear = spell.IsLinear;
                 if (ImGui.Checkbox($"##IsLinear{spell.ID}", ref isLinear))
@@ -257,11 +257,11 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     spell.IsLinear = isLinear;
                     SaveSpell();
                 }
-                ImGuiComponents.Tooltip("Used for spells like wall of stone that create a line.");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Used for spells like wall of stone that create a line."));
 
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Show Range During Cast:");
+                ImGui.Text(ImGuiTranslations.Get("Show Range During Cast:"));
                 ImGui.TableNextColumn();
                 bool showRange = spell.ShowCastRangeDuringCasting;
                 if (ImGui.Checkbox($"##ShowRange{spell.ID}", ref showRange))
@@ -272,7 +272,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Freeze While Casting:");
+                ImGui.Text(ImGuiTranslations.Get("Freeze While Casting:"));
                 ImGui.TableNextColumn();
                 bool freezeWhileCasting = spell.FreezeCharacterWhileCasting;
                 if (ImGui.Checkbox($"##FreezeWhileCasting{spell.ID}", ref freezeWhileCasting))
@@ -280,11 +280,11 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     spell.FreezeCharacterWhileCasting = freezeWhileCasting;
                     SaveSpell();
                 }
-                ImGuiComponents.Tooltip("Prevent yourself from moving and disrupting your spell.");
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Prevent yourself from moving and disrupting your spell."));
 
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.Text("Expect Target Cursor:");
+                ImGui.Text(ImGuiTranslations.Get("Expect Target Cursor:"));
                 ImGui.TableNextColumn();
                 bool expectTargetCursor = spell.ExpectTargetCursor;
                 if (ImGui.Checkbox($"##ExpectTargetCursor{spell.ID}", ref expectTargetCursor))
@@ -303,18 +303,19 @@ namespace ClassicUO.Game.UI.ImGuiControls
 
             if (spells.Count == 0)
             {
-                ImGui.Text("No spell indicators configured");
+                ImGui.Text(ImGuiTranslations.Get("No spell indicators configured"));
                 return;
             }
 
             if (ImGui.BeginTable("SpellIndicatorTable", 6, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, ImGuiTheme.Dimensions.STANDARD_TABLE_SCROLL_HEIGHT)))
             {
+                // Name and Power Words columns are NOT translated
                 ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, 150);
                 ImGui.TableSetupColumn("Power Words", ImGuiTableColumnFlags.WidthFixed, 120);
-                ImGui.TableSetupColumn("Cast Range", ImGuiTableColumnFlags.WidthFixed, 80);
-                ImGui.TableSetupColumn("Cursor Size", ImGuiTableColumnFlags.WidthFixed, 80);
-                ImGui.TableSetupColumn("Cast Time", ImGuiTableColumnFlags.WidthFixed, 80);
-                ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 80);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Cast Range"), ImGuiTableColumnFlags.WidthFixed, 80);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Cursor Size"), ImGuiTableColumnFlags.WidthFixed, 80);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Cast Time"), ImGuiTableColumnFlags.WidthFixed, 80);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 80);
                 ImGui.TableHeadersRow();
 
                 foreach (SpellRangeInfo spell in spells)
@@ -337,7 +338,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     ImGui.Text(spell.CastTime.ToString("F1"));
 
                     ImGui.TableNextColumn();
-                    if (ImGui.Button($"Edit##{spell.ID}"))
+                    if (ImGui.Button(ImGuiTranslations.Get("Edit") + $"##EditSpell{spell.ID}"))
                     {
                         selectedSpell = spell;
                         spellSearchInput = spell.Name;

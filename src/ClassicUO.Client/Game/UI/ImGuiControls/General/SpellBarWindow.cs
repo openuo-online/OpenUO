@@ -28,7 +28,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private SDL.SDL_Keymod capturedMod = SDL.SDL_Keymod.SDL_KMOD_NONE;
         private List<SDL.SDL_GamepadButton> capturedButtons = new List<SDL.SDL_GamepadButton>();
 
-        private SpellBarWindow() : base("Spell Bar")
+        private SpellBarWindow() : base(ImGuiTranslations.Get("Spell Bar"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             profile = ProfileManager.CurrentProfile;
@@ -63,7 +63,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     }
                 }
 
-                hotkeyLabels[i] = string.IsNullOrEmpty(hotkeyDisplay) ? "None" : hotkeyDisplay;
+                hotkeyLabels[i] = string.IsNullOrEmpty(hotkeyDisplay) ? ImGuiTranslations.Get("None") : hotkeyDisplay;
             }
         }
 
@@ -225,7 +225,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
@@ -238,7 +238,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.Spacing();
 
             // Main enable checkbox
-            if (ImGui.Checkbox("Enable spellbar", ref enableSpellBar))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Enable spellbar") + "##SpellBarEnable", ref enableSpellBar))
             {
                 if (SpellBarManager.ToggleEnabled())
                 {
@@ -249,48 +249,48 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     Game.UI.Gumps.SpellBar.SpellBar.Instance?.Dispose();
                 }
             }
-            ImGuiComponents.Tooltip("Enable or disable the spell bar feature");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Enable or disable the spell bar feature"));
 
             ImGui.Spacing();
 
             // Show hotkeys checkbox
-            if (ImGui.Checkbox("Display hotkeys on spellbar", ref showHotkeys))
+            if (ImGui.Checkbox(ImGuiTranslations.Get("Display hotkeys on spellbar") + "##SpellBarShowHotkeys", ref showHotkeys))
             {
                 profile.SpellBar_ShowHotkeys = showHotkeys;
                 Game.UI.Gumps.SpellBar.SpellBar.Instance?.SetupHotkeyLabels();
             }
-            ImGuiComponents.Tooltip("Show hotkey assignments on the spell bar buttons");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Show hotkey assignments on the spell bar buttons"));
 
             ImGui.Spacing();
-            ImGui.SeparatorText("Row Management:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Row Management:"));
 
             // Row management buttons
-            if (ImGui.Button("Add Row"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add Row") + "##SpellBarAddRow"))
             {
                 SpellBarManager.SpellBarRows.Add(new SpellBarRow());
                 Game.UI.Gumps.SpellBar.SpellBar.Instance?.Build();
             }
-            ImGuiComponents.Tooltip("Add a new spell bar row");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Add a new spell bar row"));
 
             ImGui.SameLine();
 
-            if (ImGui.Button("Remove Row"))
+            if (ImGui.Button(ImGuiTranslations.Get("Remove Row") + "##SpellBarRemoveRow"))
             {
                 if (SpellBarManager.SpellBarRows.Count > 1) // Make sure to always leave one row
                     SpellBarManager.SpellBarRows.RemoveAt(SpellBarManager.SpellBarRows.Count - 1);
                 Game.UI.Gumps.SpellBar.SpellBar.Instance?.Build();
             }
-            ImGuiComponents.Tooltip("Remove the last row. If you have 5 rows, row 5 will be removed.");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Remove the last row. If you have 5 rows, row 5 will be removed."));
 
             ImGui.Spacing();
-            ImGui.SeparatorText("Hotkey Configuration:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Hotkey Configuration:"));
 
             // Create a table for better layout
             if (ImGui.BeginTable("HotkeyTable", 3, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
             {
-                ImGui.TableSetupColumn("Slot", ImGuiTableColumnFlags.WidthFixed, 60);
-                ImGui.TableSetupColumn("Current Hotkey", ImGuiTableColumnFlags.WidthFixed, 150);
-                ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 120);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Slot"), ImGuiTableColumnFlags.WidthFixed, 60);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Current Hotkey"), ImGuiTableColumnFlags.WidthFixed, 150);
+                ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 120);
                 ImGui.TableHeadersRow();
 
                 for (int i = 0; i < 10; i++)
@@ -298,13 +298,13 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     ImGui.TableNextRow();
 
                     ImGui.TableNextColumn();
-                    ImGui.Text($"Slot {i}");
+                    ImGui.Text(string.Format(ImGuiTranslations.Get("Slot {0}"), i));
 
                     ImGui.TableNextColumn();
                     if (isListeningForHotkey[i])
                     {
                         // Show what we've captured so far
-                        string captureText = "Press a key or controller button...";
+                        string captureText = ImGuiTranslations.Get("Press a key or controller button...");
                         if (capturedKey != SDL.SDL_Keycode.SDLK_UNKNOWN || capturedButtons.Count > 0)
                         {
                             string parts = "";
@@ -327,7 +327,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                                 parts += buttonNames;
                             }
 
-                            captureText = $"Captured: {parts}";
+                            captureText = string.Format(ImGuiTranslations.Get("Captured: {0}"), parts);
                         }
 
                         ImGui.TextColored(new Vector4(1, 1, 0, 1), captureText);
@@ -346,24 +346,24 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     ImGui.TableNextColumn();
                     if (isListeningForHotkey[i])
                     {
-                        if (ImGui.Button($"Apply##slot{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Apply") + $"##slot{i}"))
                         {
                             ApplyCapturedHotkey();
                         }
                         ImGui.SameLine();
-                        if (ImGui.Button($"Cancel##slot{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Cancel") + $"##slot{i}"))
                         {
                             StopListeningForHotkey();
                         }
                     }
                     else
                     {
-                        if (ImGui.Button($"Set##slot{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Set") + $"##slot{i}"))
                         {
                             StartListeningForHotkey(i);
                         }
                         ImGui.SameLine();
-                        if (ImGui.Button($"Clear##slot{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Clear") + $"##slot{i}"))
                         {
                             // Clear the hotkey assignment (pass empty array instead of null to clear controller bindings)
                             SpellBarManager.SetButtons(i, SDL.SDL_Keymod.SDL_KMOD_NONE, SDL.SDL_Keycode.SDLK_UNKNOWN, new SDL.SDL_GamepadButton[0]);
@@ -379,22 +379,22 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
 
             ImGui.Spacing();
-            ImGui.SeparatorText("Preset Management:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Preset Management:"));
 
             // Preset management
-            if (ImGui.Button("Save Current Row as Preset"))
+            if (ImGui.Button(ImGuiTranslations.Get("Save Current Row as Preset") + "##SpellBarSavePreset"))
             {
                 showPresetSaveDialog = true;
             }
-            ImGuiComponents.Tooltip("Save the current spell bar row as a preset");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Save the current spell bar row as a preset"));
 
             ImGui.SameLine();
 
-            if (ImGui.Button("Load Preset"))
+            if (ImGui.Button(ImGuiTranslations.Get("Load Preset") + "##SpellBarLoadPreset"))
             {
                 showPresetLoadDialog = true;
             }
-            ImGuiComponents.Tooltip("Load a saved preset");
+            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Load a saved preset"));
 
             // Save preset dialog
             if (showPresetSaveDialog)

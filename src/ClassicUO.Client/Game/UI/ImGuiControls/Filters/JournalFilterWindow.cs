@@ -19,7 +19,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
         private Dictionary<string, string> filterInputs = new Dictionary<string, string>();
         private List<string> filterList;
 
-        private JournalFilterWindow() : base("Journal Filter")
+        private JournalFilterWindow() : base(ImGuiTranslations.Get("Journal Filter"))
         {
             WindowFlags = ImGuiWindowFlags.AlwaysAutoResize;
             profile = ProfileManager.CurrentProfile;
@@ -44,22 +44,22 @@ namespace ClassicUO.Game.UI.ImGuiControls
         {
             if (profile == null)
             {
-                ImGui.Text("Profile not loaded");
+                ImGui.Text(ImGuiTranslations.Get("Profile not loaded"));
                 return;
             }
 
             ImGui.Spacing();
-            ImGui.TextWrapped("Journal Filter allows you to hide specific messages from the journal. Messages that match exactly will be filtered out.");
+            ImGui.TextWrapped(ImGuiTranslations.Get("Journal Filter allows you to hide specific messages from the journal. Messages that match exactly will be filtered out."));
 
             // Wiki link
-            if (ImGui.Button("Journal Filter Wiki"))
+            if (ImGui.Button(ImGuiTranslations.Get("Journal Filter Wiki") + "##JournalWiki"))
             {
                 Utility.Platforms.PlatformHelper.LaunchBrowser("https://github.com/PlayTazUO/TazUO/wiki/Journal-Filters");
             }
 
-            ImGui.SeparatorText("Import & Export:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Import & Export:"));
 
-            if (ImGui.Button("Export JSON"))
+            if (ImGui.Button(ImGuiTranslations.Get("Export JSON") + "##JournalExport"))
             {
                 FileSelector.ShowFileBrowser(Client.Game.UO.World, FileSelectorType.Directory, null, null, (selectedPath) =>
                 {
@@ -71,7 +71,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Import JSON"))
+            if (ImGui.Button(ImGuiTranslations.Get("Import JSON") + "##JournalImport"))
             {
                 FileSelector.ShowFileBrowser(Client.Game.UO.World, FileSelectorType.File, null, new[] { "json" }, (selectedFile) =>
                 {
@@ -89,25 +89,25 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
 
             // Add filter section
-            ImGui.SeparatorText("Filters:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Filters:"));
 
-            if (ImGui.Button("Add Filter Entry"))
+            if (ImGui.Button(ImGuiTranslations.Get("Add Filter Entry") + "##JournalAddFilter"))
             {
                 showAddFilter = !showAddFilter;
             }
 
             if (showAddFilter)
             {
-                ImGui.SeparatorText("Add New Filter:");
+                ImGui.SeparatorText(ImGuiTranslations.Get("Add New Filter:"));
                 ImGui.Spacing();
 
-                ImGui.Text("Filter Text:");
-                ImGuiComponents.Tooltip("Must match the journal entry exactly. Partial matches not supported.");
+                ImGui.Text(ImGuiTranslations.Get("Filter Text:"));
+                ImGuiComponents.Tooltip(ImGuiTranslations.Get("Must match the journal entry exactly. Partial matches not supported."));
                 ImGui.InputText("##NewFilter", ref newFilterInput, 500);
 
                 ImGui.Spacing();
 
-                if (ImGui.Button("Add##AddFilter"))
+                if (ImGui.Button(ImGuiTranslations.Get("Add") + "##AddFilterBtn"))
                 {
                     if (!string.IsNullOrWhiteSpace(newFilterInput))
                     {
@@ -119,26 +119,26 @@ namespace ClassicUO.Game.UI.ImGuiControls
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel##AddFilter"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel") + "##AddFilterCancel"))
                 {
                     showAddFilter = false;
                     newFilterInput = "";
                 }
             }
 
-            ImGui.SeparatorText("Current Journal Filters:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Current Journal Filters:"));
 
             if (filterList.Count == 0)
             {
-                ImGui.Text("No filters configured");
+                ImGui.Text(ImGuiTranslations.Get("No filters configured"));
             }
             else
             {
                 // Table for filters
                 if (ImGui.BeginTable("JournalFilterTable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new Vector2(0, ImGuiTheme.Dimensions.STANDARD_TABLE_SCROLL_HEIGHT)))
                 {
-                    ImGui.TableSetupColumn("Filter Text", ImGuiTableColumnFlags.WidthStretch);
-                    ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 80);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Filter Text:"), ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.TableSetupColumn(ImGuiTranslations.Get("Actions"), ImGuiTableColumnFlags.WidthFixed, 80);
                     ImGui.TableHeadersRow();
 
                     for (int i = filterList.Count - 1; i >= 0; i--)
@@ -178,7 +178,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
                         }
 
                         ImGui.TableNextColumn();
-                        if (ImGui.Button($"Delete##Delete{i}"))
+                        if (ImGui.Button(ImGuiTranslations.Get("Delete") + $"##Delete{i}"))
                         {
                             JournalFilterManager.Instance.RemoveFilter(filter);
                             JournalFilterManager.Instance.Save(false);

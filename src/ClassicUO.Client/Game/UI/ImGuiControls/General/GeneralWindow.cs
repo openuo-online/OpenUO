@@ -124,19 +124,6 @@ namespace ClassicUO.Game.UI.ImGuiControls
             }
             ImGuiComponents.Tooltip(ImGuiTranslations.Get("Select the color theme for ImGui windows."));
 
-            ImGui.SetNextItemWidth(125);
-            if (ImGui.SliderFloat(ImGuiTranslations.Get("Assistant Alpha"), ref _imguiWindowAlpha, 0.2f, 1.0f, "%.2f"))
-            {
-                if(Math.Abs(_imguiWindowAlpha - _lastImguiWindowAlpha) > 0.05)
-                {
-                    _imguiWindowAlpha = Math.Clamp(_imguiWindowAlpha, 0.2f, 1.0f);
-                    _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.IMGUI_ALPHA, _imguiWindowAlpha);
-                    ImGuiManager.UpdateTheme(_imguiWindowAlpha);
-                    _lastImguiWindowAlpha = _imguiWindowAlpha;
-                }
-            }
-            ImGuiComponents.Tooltip(ImGuiTranslations.Get("Adjust the background transparency of all ImGui windows."));
-
             if (ImGui.Checkbox(ImGuiTranslations.Get("Highlight game objects"), ref _highlightObjects))
             {
                 _profile.HighlightGameObjects = _highlightObjects;
@@ -184,7 +171,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGui.EndGroup();
         }
 
-        private readonly string _version = ImGuiTranslations.Get("TazUO Version: ") + CUOEnviroment.Version; //Pre-cache to prevent reading var and string concatenation every frame
+        private readonly string _version = ImGuiTranslations.Get("OpenUO Version: ") + CUOEnviroment.Version; //Pre-cache to prevent reading var and string concatenation every frame
         private uint _lastObject = 0;
         private string _lastObjectString = ImGuiTranslations.Get("Last Object: ") + "0x00000000";
         private void DrawInfoTab()
