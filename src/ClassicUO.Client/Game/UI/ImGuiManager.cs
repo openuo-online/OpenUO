@@ -71,6 +71,11 @@ namespace ClassicUO.Game.UI
         private static void SetTazUOTheme()
         {
             ImGuiIOPtr io = ImGui.GetIO();
+            
+            // 根据 DPI 缩放因子调整字体大小
+            float baseFontSize = 16.0f;
+            float scaledFontSize = baseFontSize * CUOEnviroment.DPIScaleFactor;
+            
             unsafe
             {
                 fixed (byte* fontPtr = TrueTypeLoader.Instance.ImGuiFont)
@@ -78,7 +83,7 @@ namespace ClassicUO.Game.UI
                     ImGui.GetIO().Fonts.AddFontFromMemoryTTF(
                         (IntPtr)fontPtr,
                         TrueTypeLoader.Instance.ImGuiFont.Length,
-                        16.0f // font size
+                        scaledFontSize // 使用缩放后的字体大小
                     );
                 }
             }

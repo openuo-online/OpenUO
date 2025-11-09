@@ -72,10 +72,18 @@ namespace ClassicUO.Game.UI
         private void WindowOnClientSizeChanged(object sender, EventArgs e)
         {
             Rectangle bounds = Client.Game.Window.ClientBounds;
-            _displaySize = new(bounds.Width < 1 ? 1 : bounds.Width, bounds.Height < 1 ? 1 : bounds.Height);
+            
+            // 考虑 DPI 缩放因子，将物理像素转换为逻辑像素
+            float scaleFactor = CUOEnviroment.DPIScaleFactor;
+            float logicalWidth = bounds.Width / scaleFactor;
+            float logicalHeight = bounds.Height / scaleFactor;
+            
+            _displaySize = new(logicalWidth < 1 ? 1 : logicalWidth, logicalHeight < 1 ? 1 : logicalHeight);
 
             ImGuiIOPtr io = ImGui.GetIO();
             io.DisplaySize = _displaySize;
+            // 设置 DisplayFramebufferScale 来告诉 ImGui 实际的缩放比例
+            io.DisplayFramebufferScale = new Vector2(scaleFactor, scaleFactor);
         }
 
         #region ImGuiRenderer
@@ -212,7 +220,13 @@ namespace ClassicUO.Game.UI
 
             MouseState mouse = Mouse.GetState();
             KeyboardState keyboard = Keyboard.GetState();
-            io.AddMousePosEvent(mouse.X, mouse.Y);
+            
+            // 将物理鼠标坐标转换为逻辑坐标
+            float scaleFactor = CUOEnviroment.DPIScaleFactor;
+            float logicalMouseX = mouse.X / scaleFactor;
+            float logicalMouseY = mouse.Y / scaleFactor;
+            
+            io.AddMousePosEvent(logicalMouseX, logicalMouseY);
             io.AddMouseButtonEvent(0, mouse.LeftButton == ButtonState.Pressed);
             io.AddMouseButtonEvent(1, mouse.RightButton == ButtonState.Pressed);
             io.AddMouseButtonEvent(2, mouse.MiddleButton == ButtonState.Pressed);
