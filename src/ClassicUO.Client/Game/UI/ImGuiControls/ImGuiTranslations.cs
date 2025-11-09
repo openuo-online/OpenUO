@@ -33,7 +33,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ["Disable Module Cache"] = "禁用模块缓存",
             ["Scripts"] = "脚本",
             ["No group"] = "默认分组",
-            ["Play"] = "播放",
+            ["Play"] = "运行",
             ["Stop"] = "停止",
             ["Autostart: All characters"] = "自动启动：所有角色",
             ["Autostart: This character"] = "自动启动：当前角色",

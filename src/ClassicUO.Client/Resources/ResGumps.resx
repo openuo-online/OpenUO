@@ -961,6 +961,9 @@ Time left: {1:00}:{2:00}:{3:00}</value>
   <data name="Kick" xml:space="preserve">
     <value>Kick</value>
   </data>
+  <data name="Msg" xml:space="preserve">
+    <value>Msg</value>
+  </data>
   <data name="PartyManifest" xml:space="preserve">
     <value>Party Manifest</value>
   </data>

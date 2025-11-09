@@ -737,10 +737,10 @@
     <value>Index</value>
   </data>
   <data name="PrimaryAbilityIcon" xml:space="preserve">
-    <value>主要技能图标</value>
+    <value>Primary Ability Icon</value>
   </data>
   <data name="SecondaryAbilityIcon" xml:space="preserve">
-    <value>次要技能图标</value>
+    <value>Secondary Ability Icon</value>
   </data>
   <data name="IndexOutOfbounds" xml:space="preserve">
     <value>解析计数器栏项目时索引越界</value>
@@ -828,7 +828,7 @@
   <data name="Tell" xml:space="preserve"><value>告诉</value></data>
   <data name="Kick" xml:space="preserve"><value>踢出</value></data>
   <data name="Msg" xml:space="preserve"><value>消息</value></data>
-  <data name="PartyManifest" xml:space="preserve"><value>队伍清单</value></data>
+  <data name="PartyManifest" xml:space="preserve"><value>Members</value></data>
   <data name="SendThePartyAMessage" xml:space="preserve"><value>向队伍发送消息</value></data>
   <data name="PartyCanLootMe" xml:space="preserve"><value>队伍可以拾取我的物品</value></data>
   <data name="PartyCannotLootMe" xml:space="preserve"><value>队伍不能拾取我的物品</value></data>
