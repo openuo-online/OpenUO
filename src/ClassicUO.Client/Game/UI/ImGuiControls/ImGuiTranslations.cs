@@ -32,7 +32,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ["Running Scripts"] = "运行中的脚本",
             ["Disable Module Cache"] = "禁用模块缓存",
             ["Scripts"] = "脚本",
-            ["No group"] = "无分组",
+            ["No group"] = "默认分组",
             ["Play"] = "播放",
             ["Stop"] = "停止",
             ["Autostart: All characters"] = "自动启动：所有角色",
@@ -53,6 +53,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             // Dialogs
             ["Delete Script"] = "删除脚本",
             ["Delete Group"] = "删除分组",
+            ["Delete"] = "删除",
             ["Are you sure you want to delete"] = "确定要删除吗",
             ["This action cannot be undone."] = "此操作无法撤销。",
             ["This will permanently delete the folder and ALL scripts inside it."] = "这将永久删除文件夹及其中的所有脚本。",
@@ -64,6 +65,18 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ["Enter name:"] = "输入名称：",
             ["Script name:"] = "脚本名称：",
             ["Group name:"] = "分组名称：",
+            ["Enter a name for this script."] = "输入脚本名称。",
+            ["Enter a name for this group."] = "输入分组名称。",
+            ["Use .lscript or .py extension"] = "使用 .lscript 或 .py 扩展名",
+            
+            // Context Menu
+            ["Options:"] = "选项：",
+            ["Edit Constants"] = "编辑常量",
+            ["Edit Externally"] = "外部编辑",
+            ["Autostart"] = "自动启动",
+            ["All characters"] = "所有角色",
+            ["This character"] = "当前角色",
+            ["Create macro button"] = "创建宏按钮",
             
             // Messages
             ["A file with the name"] = "已存在同名文件",

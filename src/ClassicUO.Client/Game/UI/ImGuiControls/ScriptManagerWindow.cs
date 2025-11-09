@@ -319,7 +319,8 @@ while True:
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(5, 10));
             // Use Selectable instead of Text to get hover highlighting
             bool groupSelected = false;
-            if (ImGui.Selectable(groupName, groupSelected, ImGuiSelectableFlags.SpanAllColumns))
+            string displayGroupName = groupName == NOGROUPTEXT ? ImGuiTranslations.Get("No group") : groupName;
+            if (ImGui.Selectable(displayGroupName, groupSelected, ImGuiSelectableFlags.SpanAllColumns))
             {
                 // Single click on group name - toggle expand/collapse
                 if (!ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
@@ -793,12 +794,12 @@ while True:
         private void DrawScriptContextMenu(ScriptFile script)
         {
             ImGui.Text(script.FileName);
-            ImGui.SeparatorText("Options:");
+            ImGui.SeparatorText(ImGuiTranslations.Get("Options:"));
 
-            if(ImGui.MenuItem("Edit Constants"))
+            if(ImGui.MenuItem(ImGuiTranslations.Get("Edit Constants")))
                 ImGuiManager.AddWindow(new ScriptConstantsEditorWindow(script));
 
-            if (ImGui.MenuItem("Rename"))
+            if (ImGui.MenuItem(ImGuiTranslations.Get("Rename")))
             {
                 // Start renaming the script
                 string displayName = script.FileName;
@@ -810,29 +811,29 @@ while True:
                 _showContextMenu = false;
             }
 
-            if (ImGui.MenuItem("Edit"))
+            if (ImGui.MenuItem(ImGuiTranslations.Get("Edit")))
             {
                 ImGuiManager.AddWindow(new ScriptEditorWindow(script));
                 _showContextMenu = false;
             }
 
-            if (ImGui.MenuItem("Edit Externally"))
+            if (ImGui.MenuItem(ImGuiTranslations.Get("Edit Externally")))
             {
                 OpenFileWithDefaultApp(script.FullPath);
                 _showContextMenu = false;
             }
 
-            if (ImGui.BeginMenu("Autostart"))
+            if (ImGui.BeginMenu(ImGuiTranslations.Get("Autostart")))
             {
                 bool globalAutostart = LegionScripting.LegionScripting.AutoLoadEnabled(script, true);
                 bool characterAutostart = LegionScripting.LegionScripting.AutoLoadEnabled(script, false);
 
-                if (ImGui.Checkbox("All characters", ref globalAutostart))
+                if (ImGui.Checkbox(ImGuiTranslations.Get("All characters"), ref globalAutostart))
                 {
                     LegionScripting.LegionScripting.SetAutoPlay(script, true, globalAutostart);
                 }
 
-                if (ImGui.Checkbox("This character", ref characterAutostart))
+                if (ImGui.Checkbox(ImGuiTranslations.Get("This character"), ref characterAutostart))
                 {
                     LegionScripting.LegionScripting.SetAutoPlay(script, false, characterAutostart);
                 }
@@ -840,7 +841,7 @@ while True:
                 ImGui.EndMenu();
             }
 
-            if (ImGui.MenuItem("Create macro button"))
+            if (ImGui.MenuItem(ImGuiTranslations.Get("Create macro button")))
             {
                 var mm = MacroManager.TryGetMacroManager(World.Instance);
                 if (mm != null)
@@ -855,7 +856,7 @@ while True:
                 _showContextMenu = false;
             }
 
-            if (ImGui.MenuItem("Delete"))
+            if (ImGui.MenuItem(ImGuiTranslations.Get("Delete")))
             {
                 _dialogState.ShowScriptDeleteDialog(script);
                 _showContextMenu = false;
@@ -867,15 +868,15 @@ while True:
             if (groupName != NOGROUPTEXT && !string.IsNullOrEmpty(groupName))
             {
                 ImGui.Text(groupName);
-                ImGui.SeparatorText("Options:");
-                if (ImGui.MenuItem("Rename"))
+                ImGui.SeparatorText(ImGuiTranslations.Get("Options:"));
+                if (ImGui.MenuItem(ImGuiTranslations.Get("Rename")))
                 {
                     _renameState.StartGroupRename(groupName, parentGroup);
                     _dialogState.ShowRenameGroup = true;
                     _showContextMenu = false;
                 }
 
-                if (ImGui.MenuItem("New Script"))
+                if (ImGui.MenuItem(ImGuiTranslations.Get("New Script")))
                 {
                     _dialogState.ShowNewScript = true;
                     _showContextMenu = false;
@@ -883,14 +884,14 @@ while True:
 
                 if (string.IsNullOrEmpty(parentGroup))
                 {
-                    if (ImGui.MenuItem("New Group"))
+                    if (ImGui.MenuItem(ImGuiTranslations.Get("New Group")))
                     {
                         _dialogState.ShowNewGroup = true;
                         _showContextMenu = false;
                     }
                 }
 
-                if (ImGui.MenuItem("Delete Group"))
+                if (ImGui.MenuItem(ImGuiTranslations.Get("Delete Group")))
                 {
                     _dialogState.ShowGroupDeleteDialog(groupName, parentGroup);
                     _showContextMenu = false;
@@ -898,7 +899,7 @@ while True:
             }
             else
             {
-                if (ImGui.MenuItem("New Script"))
+                if (ImGui.MenuItem(ImGuiTranslations.Get("New Script")))
                 {
                     _dialogState.ShowNewScript = true;
                     _showContextMenu = false;
@@ -906,7 +907,7 @@ while True:
 
                 if (string.IsNullOrEmpty(parentGroup))
                 {
-                    if (ImGui.MenuItem("New Group"))
+                    if (ImGui.MenuItem(ImGuiTranslations.Get("New Group")))
                     {
                         _dialogState.ShowNewGroup = true;
                         _showContextMenu = false;
@@ -918,20 +919,20 @@ while True:
         private void DrawDialogs()
         {
             // Open popups when dialog state changes - ImGUI will handle positioning automatically
-            if (_dialogState.ShowNewScript && !ImGui.IsPopupOpen("New Script"))
+            if (_dialogState.ShowNewScript && !ImGui.IsPopupOpen(ImGuiTranslations.Get("New Script") + "##NewScriptDialog"))
             {
-                ImGui.OpenPopup("New Script");
+                ImGui.OpenPopup(ImGuiTranslations.Get("New Script") + "##NewScriptDialog");
                 // Center the popup on the main viewport
                 ImGui.SetNextWindowPos(ImGui.GetMainViewport().GetCenter(), ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
             }
-            if (_dialogState.ShowNewGroup && !ImGui.IsPopupOpen("New Group"))
+            if (_dialogState.ShowNewGroup && !ImGui.IsPopupOpen(ImGuiTranslations.Get("New Group") + "##NewGroupDialog"))
             {
-                ImGui.OpenPopup("New Group");
+                ImGui.OpenPopup(ImGuiTranslations.Get("New Group") + "##NewGroupDialog");
                 ImGui.SetNextWindowPos(ImGui.GetMainViewport().GetCenter(), ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
             }
-            if (_dialogState.ShowRenameGroup && !ImGui.IsPopupOpen("Rename Group"))
+            if (_dialogState.ShowRenameGroup && !ImGui.IsPopupOpen("Rename Group##RenameGroupDialog"))
             {
-                ImGui.OpenPopup("Rename Group");
+                ImGui.OpenPopup("Rename Group##RenameGroupDialog");
                 ImGui.SetNextWindowPos(ImGui.GetMainViewport().GetCenter(), ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
             }
             if (_dialogState.ShowDeleteConfirm && !ImGui.IsPopupOpen(_dialogState.DeleteTitle))
@@ -942,11 +943,11 @@ while True:
 
             // New Script Dialog
             bool showNewScript = _dialogState.ShowNewScript;
-            if (ImGui.BeginPopupModal("New Script", ref showNewScript, ImGuiWindowFlags.AlwaysAutoResize))
+            if (ImGui.BeginPopupModal(ImGuiTranslations.Get("New Script") + "##NewScriptDialog", ref showNewScript, ImGuiWindowFlags.AlwaysAutoResize))
             {
                 _dialogState.ShowNewScript = showNewScript;
-                ImGui.Text("Enter a name for this script.");
-                ImGui.Text("Use .lscript or .py extension");
+                ImGui.Text(ImGuiTranslations.Get("Enter a name for this script."));
+                ImGui.Text(ImGuiTranslations.Get("Use .lscript or .py extension"));
 
                 string scriptName = _dialogState.NewScriptName;
                 ImGui.InputText("##ScriptName", ref scriptName, 100);
@@ -954,7 +955,7 @@ while True:
 
                 ImGui.Separator();
 
-                if (ImGui.Button("Create"))
+                if (ImGui.Button(ImGuiTranslations.Get("Create")))
                 {
                     if (!string.IsNullOrEmpty(_dialogState.NewScriptName))
                     {
@@ -1063,7 +1064,7 @@ while True:
 
                 ImGui.SameLine();
 
-                if (ImGui.Button("Cancel"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel")))
                 {
                     _dialogState.NewScriptName = "";
                     _dialogState.ShowNewScript = false;
@@ -1074,10 +1075,10 @@ while True:
 
             // New Group Dialog
             bool showNewGroup = _dialogState.ShowNewGroup;
-            if (ImGui.BeginPopupModal("New Group", ref showNewGroup, ImGuiWindowFlags.AlwaysAutoResize))
+            if (ImGui.BeginPopupModal(ImGuiTranslations.Get("New Group") + "##NewGroupDialog", ref showNewGroup, ImGuiWindowFlags.AlwaysAutoResize))
             {
                 _dialogState.ShowNewGroup = showNewGroup;
-                ImGui.Text("Enter a name for this group.");
+                ImGui.Text(ImGuiTranslations.Get("Enter a name for this group."));
 
                 string groupName = _dialogState.NewGroupName;
                 ImGui.InputText("##GroupName", ref groupName, 100);
@@ -1085,7 +1086,7 @@ while True:
 
                 ImGui.Separator();
 
-                if (ImGui.Button("Create"))
+                if (ImGui.Button(ImGuiTranslations.Get("Create")))
                 {
                     if (!string.IsNullOrEmpty(_dialogState.NewGroupName))
                     {
@@ -1174,7 +1175,7 @@ while True:
 
                 ImGui.SameLine();
 
-                if (ImGui.Button("Cancel"))
+                if (ImGui.Button(ImGuiTranslations.Get("Cancel")))
                 {
                     _dialogState.NewGroupName = "";
                     _dialogState.ShowNewGroup = false;
@@ -1185,7 +1186,7 @@ while True:
 
             // Rename Group Dialog
             bool showRenameGroup = _dialogState.ShowRenameGroup;
-            if (ImGui.BeginPopupModal("Rename Group", ref showRenameGroup, ImGuiWindowFlags.AlwaysAutoResize))
+            if (ImGui.BeginPopupModal("Rename Group##RenameGroupDialog", ref showRenameGroup, ImGuiWindowFlags.AlwaysAutoResize))
             {
                 _dialogState.ShowRenameGroup = showRenameGroup;
                 ImGui.Text($"Enter a new name for the group '{_renameState.GroupName}'.");
