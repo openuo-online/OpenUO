@@ -435,9 +435,8 @@ namespace ClassicUO.Game.UI.Gumps
 
                 if (party == null)
                 {
-                    int x = Client.Game.Window.ClientBounds.Width / 2 - 272;
-                    int y = Client.Game.Window.ClientBounds.Height / 2 - 240;
-                    UIManager.Add(new PartyGump(World, x, y, World.Party.CanLoot));
+                    // 使用 0, 0 触发 PartyGump 的自动居中逻辑
+                    UIManager.Add(new PartyGump(World, 0, 0, World.Party.CanLoot));
                 }
                 else
                 {
