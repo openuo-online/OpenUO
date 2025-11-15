@@ -1143,5 +1143,46 @@
   
   <!-- 通用 -->
   <data name="ScriptContainer" xml:space="preserve"><value>容器</value></data>
+  <data name="Assistant" xml:space="preserve">
+    <value>助手</value>
+  </data>
+  <data name="LegionScript" xml:space="preserve">
+    <value>脚本</value>
+  </data>
+  <data name="MoreMenu" xml:space="preserve">
+    <value>更多 +</value>
+  </data>
+  <data name="XmlGumps" xml:space="preserve">
+    <value>XML界面</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>重新加载</value>
+  </data>
+  <data name="ToggleNameplates" xml:space="preserve">
+    <value>切换名牌显示</value>
+  </data>
+  <data name="Discord" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="SpellQuickCast" xml:space="preserve">
+    <value>快速施法</value>
+  </data>
+  <data name="OpenBoatControl" xml:space="preserve">
+    <value>打开船只控制</value>
+  </data>
+  <data name="NearbyLoot" xml:space="preserve">
+    <value>附近战利品</value>
+  </data>
+  <data name="RetrieveGumps" xml:space="preserve">
+    <value>恢复界面位置</value>
+  </data>
+  <data name="Map" xml:space="preserve">
+    <value>地图</value>
+  </data>
+  <data name="Commands" xml:space="preserve">
+    <value>命令</value>
+  </data>
 </root>
-

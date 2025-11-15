@@ -5062,5 +5062,122 @@ namespace ClassicUO.Resources {
                 return ResourceManager.GetString("ScriptContainer", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assistant.
+        /// </summary>
+        public static string Assistant {
+            get {
+                return ResourceManager.GetString("Assistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Legion Script.
+        /// </summary>
+        public static string LegionScript {
+            get {
+                return ResourceManager.GetString("LegionScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More +.
+        /// </summary>
+        public static string MoreMenu {
+            get {
+                return ResourceManager.GetString("MoreMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xml Gumps.
+        /// </summary>
+        public static string XmlGumps {
+            get {
+                return ResourceManager.GetString("XmlGumps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload.
+        /// </summary>
+        public static string Reload {
+            get {
+                return ResourceManager.GetString("Reload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle nameplates.
+        /// </summary>
+        public static string ToggleNameplates {
+            get {
+                return ResourceManager.GetString("ToggleNameplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discord.
+        /// </summary>
+        public static string Discord {
+            get {
+                return ResourceManager.GetString("Discord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string Tools {
+            get {
+                return ResourceManager.GetString("Tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spell quick cast.
+        /// </summary>
+        public static string SpellQuickCast {
+            get {
+                return ResourceManager.GetString("SpellQuickCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open boat control.
+        /// </summary>
+        public static string OpenBoatControl {
+            get {
+                return ResourceManager.GetString("OpenBoatControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nearby loot.
+        /// </summary>
+        public static string NearbyLoot {
+            get {
+                return ResourceManager.GetString("NearbyLoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieve gumps.
+        /// </summary>
+        public static string RetrieveGumps {
+            get {
+                return ResourceManager.GetString("RetrieveGumps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commands.
+        /// </summary>
+        public static string Commands {
+            get {
+                return ResourceManager.GetString("Commands", resourceCulture);
+            }
+        }
     }
 }

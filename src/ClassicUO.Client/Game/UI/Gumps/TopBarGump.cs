@@ -58,27 +58,21 @@ namespace ClassicUO.Game.UI.Gumps
 
             int[][] textTable =
             {
+                new[] { 1, (int) Buttons.Map },
                 new[] { 1, (int) Buttons.Paperdoll },
                 new[] { 1, (int) Buttons.Inventory },
                 new[] { 1, (int) Buttons.Journal },
-                new[] { 0, (int) Buttons.Chat },
                 new[] { 1, (int) Buttons.WorldMap },
-                new[] { 1, (int) Buttons.UOStore },
             };
-
-            ClilocLoader cliloc = Client.Game.UO.FileManager.Clilocs;
 
             string[] texts =
             {
-                cliloc.GetString(3000133, ResGumps.Paperdoll),
-                cliloc.GetString(3000431, ResGumps.Inventory),
-                cliloc.GetString(3000129, ResGumps.Journal),
-                cliloc.GetString(3000131, ResGumps.Chat),
-                StringHelper.CapitalizeAllWords(cliloc.GetString(1015233, ResGumps.WorldMap)),
-                cliloc.GetString(1158008, ResGumps.UOStore),
+                ResGumps.Map,
+                ResGumps.Paperdoll,
+                ResGumps.Inventory,
+                ResGumps.Journal,
+                ResGumps.WorldMap,
             };
-
-            bool hasUOStore = Client.Game.UO.Version >= ClientVersion.CV_706400;
 
             ResizePic background;
 
@@ -98,11 +92,6 @@ namespace ClassicUO.Game.UI.Gumps
 
             for (int i = 0; i < textTable.Length; i++)
             {
-                if (!hasUOStore && i >= (int)Buttons.UOStore)
-                {
-                    break;
-                }
-
                 ushort graphic = (ushort)(textTable[i][0] != 0 ? 0x098D : 0x098B);
 
                 Add(
@@ -135,7 +124,7 @@ namespace ClassicUO.Game.UI.Gumps
                 0x098D,
                 0x098D,
                 0x098D,
-                "Assistant",
+                ResGumps.Assistant,
                 1,
                 true,
                 0,
@@ -155,7 +144,7 @@ namespace ClassicUO.Game.UI.Gumps
                 0x098D,
                 0x098D,
                 0x098D,
-                "Legion Script",
+                ResGumps.LegionScript,
                 1,
                 true,
                 0,
@@ -181,7 +170,7 @@ namespace ClassicUO.Game.UI.Gumps
                     0x098D,
                     0x098D,
                     0x098D,
-                    "More +",
+                    ResGumps.MoreMenu,
                     1,
                     true,
                     0,
@@ -197,11 +186,11 @@ namespace ClassicUO.Game.UI.Gumps
             );
             moreMenu.ContextMenu = new ContextMenuControl(this);
             moreMenu.MouseUp += (s, e) => { moreMenu.ContextMenu?.Show(); };
-            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(Language.Instance.TopBarGump.CommandsEntry, () =>
+            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(ResGumps.Commands, () =>
             {
                 UIManager.Add(new CommandsGump(world));
             }));
-            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(cliloc.GetString(1079449, ResGumps.Info), () =>
+            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(ResGumps.Info, () =>
             {
                 if (World.TargetManager.IsTargeting)
                 {
@@ -210,7 +199,7 @@ namespace ClassicUO.Game.UI.Gumps
 
                 World.TargetManager.SetTargeting(CursorTarget.SetTargetClientSide, CursorType.Target, TargetType.Neutral);
             }));
-            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(cliloc.GetString(1042237, ResGumps.Debug), () =>
+            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(ResGumps.Debug, () =>
             {
                 DebugGump debugGump = UIManager.GetGump<DebugGump>();
 
@@ -225,7 +214,7 @@ namespace ClassicUO.Game.UI.Gumps
                     debugGump.SetInScreen();
                 }
             }));
-            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(cliloc.GetString(3000169, ResGumps.NetStats), () =>
+            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(ResGumps.NetStats, () =>
             {
                 NetworkStatsGump netstatsgump = UIManager.GetGump<NetworkStatsGump>();
 
@@ -240,17 +229,17 @@ namespace ClassicUO.Game.UI.Gumps
                     netstatsgump.SetInScreen();
                 }
             }));
-            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(cliloc.GetString(3000134, ResGumps.Help), () => { GameActions.RequestHelp(); }));
+            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(ResGumps.Help, () => { GameActions.RequestHelp(); }));
 
-            moreMenu.ContextMenu.Add(new ContextMenuItemEntry("Toggle nameplates", () => { World.NameOverHeadManager.ToggleOverheads(); }));
+            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(ResGumps.ToggleNameplates, () => { World.NameOverHeadManager.ToggleOverheads(); }));
 
-            moreMenu.ContextMenu.Add(new ContextMenuItemEntry("Discord", () => { UIManager.Add(new DiscordGump(World)); }));
+            moreMenu.ContextMenu.Add(new ContextMenuItemEntry(ResGumps.Discord, () => { UIManager.Add(new DiscordGump(World)); }));
 
-            var submenu = new ContextMenuItemEntry("Tools");
-            submenu.Add(new ContextMenuItemEntry("Spell quick cast", () => { UIManager.Add(new SpellQuickSearch(World, 200, 200, (sp) => {if (sp != null) GameActions.CastSpell(sp.ID);})); }));
-            submenu.Add(new ContextMenuItemEntry("Open boat control", () => { UIManager.Add(new BoatControl(World) { X = 200, Y = 200 }); }));
-            submenu.Add(new ContextMenuItemEntry("Nearby loot", () => { UIManager.Add(new NearbyLootGump(World)); }));
-            submenu.Add(new ContextMenuItemEntry("Retrieve gumps", () =>
+            var submenu = new ContextMenuItemEntry(ResGumps.Tools);
+            submenu.Add(new ContextMenuItemEntry(ResGumps.SpellQuickCast, () => { UIManager.Add(new SpellQuickSearch(World, 200, 200, (sp) => {if (sp != null) GameActions.CastSpell(sp.ID);})); }));
+            submenu.Add(new ContextMenuItemEntry(ResGumps.OpenBoatControl, () => { UIManager.Add(new BoatControl(World) { X = 200, Y = 200 }); }));
+            submenu.Add(new ContextMenuItemEntry(ResGumps.NearbyLoot, () => { UIManager.Add(new NearbyLootGump(World)); }));
+            submenu.Add(new ContextMenuItemEntry(ResGumps.RetrieveGumps, () =>
             {
                 for (LinkedListNode<Gump> last = UIManager.Gumps.Last; last != null; last = last.Previous)
                 {
@@ -277,7 +266,7 @@ namespace ClassicUO.Game.UI.Gumps
                         0x098D,
                         0x098D,
                         0x098D,
-                        "Xml Gumps",
+                        ResGumps.XmlGumps,
                         1,
                         true,
                         0,
@@ -341,7 +330,7 @@ namespace ClassicUO.Game.UI.Gumps
                 }, false, ProfileManager.CurrentProfile.AutoOpenXmlGumps.Contains(xml)));
             }
 
-            var reload = new ContextMenuItemEntry("Reload", RefreshXmlGumps);
+            var reload = new ContextMenuItemEntry(ResGumps.Reload, RefreshXmlGumps);
             XmlGumps.ContextMenu.Add(reload);
         }
 
@@ -405,6 +394,11 @@ namespace ClassicUO.Game.UI.Gumps
         {
             switch ((Buttons)buttonID)
             {
+                case Buttons.Map:
+                    GameActions.OpenMiniMap(World);
+
+                    break;
+                    
                 case Buttons.Paperdoll:
                     GameActions.OpenPaperdoll(World, World.Player);
 
@@ -420,19 +414,6 @@ namespace ClassicUO.Game.UI.Gumps
 
                     break;
 
-                case Buttons.Chat:
-                    GameActions.OpenChat(World);
-
-                    break;
-
-                case Buttons.UOStore:
-                    if (Client.Game.UO.Version >= ClientVersion.CV_706400)
-                    {
-                        AsyncNetClient.Socket.Send_OpenUOStore();
-                    }
-
-                    break;
-
                 case Buttons.WorldMap:
                     GameActions.OpenWorldMap(World);
 
@@ -442,6 +423,7 @@ namespace ClassicUO.Game.UI.Gumps
 
         private enum Buttons
         {
+            Map,
             Paperdoll,
             Inventory,
             Journal,
