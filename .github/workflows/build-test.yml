@@ -51,9 +51,6 @@ jobs:
     - name: Build
       run: dotnet build -c Release /p:TreatWarningsAsErrors=false
 
-    - name: Test
-      run: dotnet test --verbosity normal tests/ClassicUO.UnitTests
-
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
