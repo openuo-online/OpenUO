@@ -576,6 +576,30 @@ namespace ClassicUO.LegionScripting
         );
 
         /// <summary>
+        /// Send a standard menu response (used by skills like Tracking).
+        /// Example:
+        /// ```py
+        /// API.MenuResponse(API.Player, 0x1A, 2)
+        /// ```
+        /// </summary>
+        public void MenuResponse(uint serial, ushort menuId, int index, ushort itemGraphic = 0, ushort itemHue = 0) => MainThreadQueue.InvokeOnMainThread
+        (() =>
+            {
+                AsyncNetClient.Socket.Send_MenuResponse(serial, menuId, index, itemGraphic, itemHue);
+            }
+        );
+
+        /// <summary>
+        /// Send a response to a gray menu (text list menus).
+        /// </summary>
+        public void GrayMenuResponse(uint serial, ushort menuId, ushort index) => MainThreadQueue.InvokeOnMainThread
+        (() =>
+            {
+                AsyncNetClient.Socket.Send_GrayMenuResponse(serial, menuId, index);
+            }
+        );
+
+        /// <summary>
         /// Attempt to equip an item. Layer is automatically detected.
         /// Example:
         /// ```py

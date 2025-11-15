@@ -209,6 +209,36 @@ namespace ClassicUO.LegionScripting
                 { "index", index }
             });
 
+        public void RecordMenuResponse(uint serial, ushort menuId, int index, ushort itemGraphic, ushort itemHue)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "serial", serial },
+                { "menuid", menuId },
+                { "index", index }
+            };
+
+            if (itemGraphic != 0)
+                parameters["itemgraphic"] = itemGraphic;
+
+            if (itemHue != 0)
+                parameters["itemhue"] = itemHue;
+
+            RecordAction("menuresponse", parameters);
+        }
+
+        public void RecordGrayMenuResponse(uint serial, ushort menuId, ushort index)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "serial", serial },
+                { "menuid", menuId },
+                { "index", index }
+            };
+
+            RecordAction("graymenuresponse", parameters);
+        }
+
         public void RecordUseSkill(string skillName) => RecordAction("useskill", new Dictionary<string, object> { { "skill", skillName } });
 
         public void RecordEquipItem(uint serial, Layer layer) => RecordAction("equipitem", new Dictionary<string, object>
@@ -392,6 +422,45 @@ namespace ClassicUO.LegionScripting
                         if (action.Parameters.TryGetValue("serial", out object contextSerial) &&
                             action.Parameters.TryGetValue("index", out object contextIndex))
                             script.AppendLine($"API.ContextMenu(0x{contextSerial:X8}, {contextIndex})");
+                        break;
+
+                    case "menuresponse":
+                        if (action.Parameters.TryGetValue("serial", out object menuSerial) &&
+                            action.Parameters.TryGetValue("menuid", out object menuId) &&
+                            action.Parameters.TryGetValue("index", out object menuIndex))
+                        {
+                            uint serialValue = Convert.ToUInt32(menuSerial);
+                            ushort menuIdValue = Convert.ToUInt16(menuId);
+                            int indexValue = Convert.ToInt32(menuIndex);
+
+                            string menuCall = $"API.MenuResponse(0x{serialValue:X8}, 0x{menuIdValue:X4}, {indexValue}";
+
+                            bool hasGraphic = action.Parameters.TryGetValue("itemgraphic", out object menuGraphic);
+                            bool hasHue = action.Parameters.TryGetValue("itemhue", out object menuHue);
+
+                            if (hasGraphic || hasHue)
+                            {
+                                ushort graphicValue = hasGraphic ? Convert.ToUInt16(menuGraphic) : (ushort)0;
+                                ushort hueValue = hasHue ? Convert.ToUInt16(menuHue) : (ushort)0;
+                                menuCall += $", 0x{graphicValue:X4}, 0x{hueValue:X4}";
+                            }
+
+                            menuCall += ")";
+                            script.AppendLine(menuCall);
+                        }
+                        break;
+
+                    case "graymenuresponse":
+                        if (action.Parameters.TryGetValue("serial", out object graySerial) &&
+                            action.Parameters.TryGetValue("menuid", out object grayMenuId) &&
+                            action.Parameters.TryGetValue("index", out object grayIndex))
+                        {
+                            uint serialValue = Convert.ToUInt32(graySerial);
+                            ushort menuIdValue = Convert.ToUInt16(grayMenuId);
+                            ushort indexValue = Convert.ToUInt16(grayIndex);
+
+                            script.AppendLine($"API.GrayMenuResponse(0x{serialValue:X8}, 0x{menuIdValue:X4}, {indexValue})");
+                        }
                         break;
 
                     case "useskill":
