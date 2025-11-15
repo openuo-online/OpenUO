@@ -421,10 +421,10 @@ you criminal!</value>
     <value>连接丢失:
 {0}</value>
   </data>
-  <data name="QuitPrompt" xml:space="preserve">
+  <!-- <data name="QuitPrompt" xml:space="preserve">
     <value>退出
 Ultima Online?</value>
-  </data>
+  </data> -->
   <data name="YouAreDead" xml:space="preserve">
     <value>你死了。</value>
   </data>
