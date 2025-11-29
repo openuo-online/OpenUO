@@ -1,9 +1,10 @@
-﻿// SPDX-License-Identifier: BSD-2-Clause
+// SPDX-License-Identifier: BSD-2-Clause
 
 using ClassicUO.Configuration;
 using ClassicUO.Game;
 using Microsoft.Xna.Framework;
 using SDL3;
+using ClassicUO.Game.UI;
 
 namespace ClassicUO.Input
 {
@@ -144,11 +145,7 @@ namespace ClassicUO.Input
 
             Position.Y = (int)((double)Position.Y * Client.Game.GraphicManager.PreferredBackBufferHeight / Client.Game.Window.ClientBounds.Height);
 
-            if (Client.Game.UO.World != null && Client.Game.UO.World.InGame && ProfileManager.CurrentProfile.GlobalScaling)
-            {
-                Position.X = (int)(Position.X / ProfileManager.CurrentProfile.GlobalScale);
-                Position.Y = (int)(Position.Y / ProfileManager.CurrentProfile.GlobalScale);
-            }
+            Position = UIScaleHelper.ConvertToLogical(Position);
 
             IsDragging = LButtonPressed || RButtonPressed || MButtonPressed;
         }

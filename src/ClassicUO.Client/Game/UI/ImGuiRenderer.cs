@@ -72,10 +72,31 @@ namespace ClassicUO.Game.UI
         private void WindowOnClientSizeChanged(object sender, EventArgs e)
         {
             Rectangle bounds = Client.Game.Window.ClientBounds;
-            _displaySize = new(bounds.Width < 1 ? 1 : bounds.Width, bounds.Height < 1 ? 1 : bounds.Height);
+            
+            // 使用 UIScaleHelper.GetCurrentScale() 来尊重用户的 GlobalScaling 设置
+            // 优先使用用户设置，其次使用系统 DPI 缩放
+            float scaleFactor = UIScaleHelper.GetCurrentScale();
+            float logicalWidth, logicalHeight;
+            
+            if (CUOEnviroment.IsHighDPI)
+            {
+                // macOS HiDPI：ClientBounds 已经是逻辑像素，直接使用
+                logicalWidth = bounds.Width;
+                logicalHeight = bounds.Height;
+            }
+            else
+            {
+                // Windows/Linux：除以缩放因子
+                logicalWidth = bounds.Width / scaleFactor;
+                logicalHeight = bounds.Height / scaleFactor;
+            }
+            
+            _displaySize = new(logicalWidth < 1 ? 1 : logicalWidth, logicalHeight < 1 ? 1 : logicalHeight);
 
             ImGuiIOPtr io = ImGui.GetIO();
             io.DisplaySize = _displaySize;
+            // 设置 DisplayFramebufferScale 来告诉 ImGui 实际的缩放比例
+            io.DisplayFramebufferScale = new Vector2(scaleFactor, scaleFactor);
         }
 
         #region ImGuiRenderer
@@ -212,7 +233,15 @@ namespace ClassicUO.Game.UI
 
             MouseState mouse = Mouse.GetState();
             KeyboardState keyboard = Keyboard.GetState();
-            io.AddMousePosEvent(mouse.X, mouse.Y);
+            
+            // 转换鼠标坐标
+            // Mouse.GetState() 在所有平台都返回物理像素坐标，需要转换为逻辑坐标
+            // 使用 UIScaleHelper.GetCurrentScale() 来尊重用户的 GlobalScaling 设置
+            float scaleFactor = UIScaleHelper.GetCurrentScale();
+            float logicalMouseX = mouse.X / scaleFactor;
+            float logicalMouseY = mouse.Y / scaleFactor;
+            
+            io.AddMousePosEvent(logicalMouseX, logicalMouseY);
             io.AddMouseButtonEvent(0, mouse.LeftButton == ButtonState.Pressed);
             io.AddMouseButtonEvent(1, mouse.RightButton == ButtonState.Pressed);
             io.AddMouseButtonEvent(2, mouse.MiddleButton == ButtonState.Pressed);

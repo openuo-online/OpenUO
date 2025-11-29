@@ -146,14 +146,17 @@ namespace ClassicUO.Game.UI.Gumps
                         h = 480;
                     }
 
-                    if (w > Client.Game.Window.ClientBounds.Width - BORDER_WIDTH)
+                    // 使用逻辑窗口边界，确保在 HiDPI 模式下坐标正确
+                    Rectangle windowBounds = UIScaleHelper.GetLogicalWindowBounds();
+
+                    if (w > windowBounds.Width - BORDER_WIDTH)
                     {
-                        w = Client.Game.Window.ClientBounds.Width - BORDER_WIDTH;
+                        w = windowBounds.Width - BORDER_WIDTH;
                     }
 
-                    if (h > Client.Game.Window.ClientBounds.Height - BORDER_WIDTH)
+                    if (h > windowBounds.Height - BORDER_WIDTH)
                     {
-                        h = Client.Game.Window.ClientBounds.Height - BORDER_WIDTH;
+                        h = windowBounds.Height - BORDER_WIDTH;
                     }
 
                     _lastSize.X = w;
@@ -181,9 +184,12 @@ namespace ClassicUO.Game.UI.Gumps
 
             Point position = Location;
 
-            if (position.X + Width - BORDER_WIDTH > Client.Game.Window.ClientBounds.Width)
+            // 使用逻辑窗口边界，确保在 HiDPI 模式下坐标正确
+            Rectangle windowBounds = UIScaleHelper.GetLogicalWindowBounds();
+
+            if (position.X + Width - BORDER_WIDTH > windowBounds.Width)
             {
-                position.X = Client.Game.Window.ClientBounds.Width - (Width - BORDER_WIDTH);
+                position.X = windowBounds.Width - (Width - BORDER_WIDTH);
             }
 
             if (position.X < -BORDER_WIDTH)
@@ -191,9 +197,9 @@ namespace ClassicUO.Game.UI.Gumps
                 position.X = -BORDER_WIDTH;
             }
 
-            if (position.Y + Height - BORDER_WIDTH > Client.Game.Window.ClientBounds.Height)
+            if (position.Y + Height - BORDER_WIDTH > windowBounds.Height)
             {
-                position.Y = Client.Game.Window.ClientBounds.Height - (Height - BORDER_WIDTH);
+                position.Y = windowBounds.Height - (Height - BORDER_WIDTH);
             }
 
             if (position.Y < -BORDER_WIDTH)

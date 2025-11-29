@@ -134,60 +134,88 @@ namespace ClassicUO.Game.UI
             int z_width = _textBox.Width + 8;
             int z_height = _textBox.Height + 8;
 
+            // Tooltip 使用自己的 Matrix.CreateScale，会覆盖全局缩放矩阵
+            // 所以需要同时应用：用户的 zoom 设置 + 系统的 globalScale
+            float globalScale = UIScaleHelper.GetCurrentScale();
+            float totalScale = zoom * globalScale;
+
+            // 在逻辑坐标系中计算缩放后的尺寸（应用 totalScale）
+            int scaledWidth = (int)(z_width * totalScale);
+            int scaledHeight = (int)(z_height * totalScale);
+
+            // 使用逻辑坐标系的窗口边界进行边界检查
+            // 将边界也转换到相同的缩放空间以确保一致性
+            Rectangle logicalBounds = UIScaleHelper.GetLogicalWindowBounds();
+            int logicalWidth = (int)(logicalBounds.Width * globalScale);
+            int logicalHeight = (int)(logicalBounds.Height * globalScale);
+
             if (x < 0)
             {
                 x = 0;
             }
-            else if (x > Client.Game.Window.ClientBounds.Width - z_width)
+            else if (x > logicalWidth - scaledWidth)
             {
-                x = Client.Game.Window.ClientBounds.Width - z_width;
+                x = logicalWidth - scaledWidth;
             }
 
             if (y < 0)
             {
                 y = 0;
             }
-            else if (y > Client.Game.Window.ClientBounds.Height - z_height)
+            else if (y > logicalHeight - scaledHeight)
             {
-                y = Client.Game.Window.ClientBounds.Height - z_height;
+                y = logicalHeight - scaledHeight;
             }
 
-            X = x - 4;
-            Y = y - 2;
-            Width = (int)(z_width * zoom) + 1;
-            Height = (int)(z_height * zoom) + 1;
+            // 计算最终的绘制区域（包含边距）
+            int drawX = x - 4;
+            int drawY = y - 2;
+            
+            X = drawX;
+            Y = drawY;
+            Width = scaledWidth + 1;
+            Height = scaledHeight + 1;
 
             Vector3 hue_vec = ShaderHueTranslator.GetHueVector(1, false, alpha);
 
             if (ProfileManager.CurrentProfile != null)
                 hue_vec.X = ProfileManager.CurrentProfile.ToolTipBGHue;
 
+            // 绘制背景
             batcher.Draw
             (
                 SolidColorTextureCache.GetTexture(Color.White),
-                new Rectangle
-                (
-                    x - 4,
-                    y - 2,
-                    (int)(z_width * zoom),
-                    (int)(z_height * zoom)
-                ),
+                new Rectangle(drawX, drawY, scaledWidth, scaledHeight),
                 hue_vec
             );
 
             hue_vec = ShaderHueTranslator.GetHueVector(0, false, alpha);
 
+            // 绘制边框
             batcher.DrawRectangle
             (
                 SolidColorTextureCache.GetTexture(Color.Gray),
-                x - 4,
-                y - 2,
-                (int)(z_width * zoom),
-                (int)(z_height * zoom),
+                drawX,
+                drawY,
+                scaledWidth,
+                scaledHeight,
                 hue_vec
             );
 
-            _textBox.Draw(batcher, x, y);
+            // 绘制文本（使用 Matrix.CreateScale）
+            if (totalScale != 1f)
+            {
+                batcher.SetStencil(null);
+                batcher.End();
+                batcher.Begin(null, Microsoft.Xna.Framework.Matrix.CreateScale(totalScale));
+                _textBox.Draw(batcher, (int)(x / totalScale), (int)(y / totalScale));
+                batcher.End();
+                batcher.Begin();
+            }
+            else
+            {
+                _textBox.Draw(batcher, x, y);
+            }
 
             return true;
         }

@@ -141,77 +141,42 @@ namespace ClassicUO.Game.UI.Gumps
 
         public void CenterXInScreen()
         {
-            Rectangle windowBounds = Client.Game.Window.ClientBounds;
-            if (ProfileManager.CurrentProfile.GlobalScaling)
-            {
-                float scale = ProfileManager.CurrentProfile.GlobalScale;
-                // Convert physical width to unscaled (logical) width
-                float logicalWidth = windowBounds.Width / scale;
-                // Center in logical coordinates
-                X = (int)((logicalWidth - Width) / 2);
-            }
-            else
-            {
-                X = (windowBounds.Width - Width) / 2;
-            }
+            // 使用逻辑坐标系的窗口边界，自动处理 HighDPI 和 GlobalScaling
+            Rectangle logicalBounds = UIScaleHelper.GetLogicalWindowBounds();
+            X = (logicalBounds.Width - Width) / 2;
         }
 
         public void CenterYInScreen()
         {
-            Rectangle windowBounds = Client.Game.Window.ClientBounds;
-            if (ProfileManager.CurrentProfile.GlobalScaling)
-            {
-                float scale = ProfileManager.CurrentProfile.GlobalScale;
-                float logicalHeight = windowBounds.Height / scale;
-                Y = (int)((logicalHeight - Height) / 2);
-            }
-            else
-            {
-                Y = (windowBounds.Height - Height) / 2;
-            }
+            // 使用逻辑坐标系的窗口边界，自动处理 HighDPI 和 GlobalScaling
+            Rectangle logicalBounds = UIScaleHelper.GetLogicalWindowBounds();
+            Y = (logicalBounds.Height - Height) / 2;
         }
 
         public void CenterXInViewPort()
         {
+            // Camera.Bounds 已经是逻辑坐标，直接使用
             Camera camera = Client.Game.Scene.Camera;
-            if (ProfileManager.CurrentProfile.GlobalScaling)
-            {
-                float scale = ProfileManager.CurrentProfile.GlobalScale;
-                // Compute the camera's physical center, then convert to logical coordinates.
-                float logicalCenterX = (camera.Bounds.X + camera.Bounds.Width / 2f);
-                // Set element X so that its center aligns with the camera's logical center.
-                X = (int)(logicalCenterX - ((Width / scale) / 2f));
-            }
-            else
-            {
-                X = camera.Bounds.X + ((camera.Bounds.Width - Width) / 2);
-            }
+            X = camera.Bounds.X + ((camera.Bounds.Width - Width) / 2);
         }
 
         public void CenterYInViewPort()
         {
+            // Camera.Bounds 已经是逻辑坐标，直接使用
             Camera camera = Client.Game.Scene.Camera;
-            if (ProfileManager.CurrentProfile.GlobalScaling)
-            {
-                float scale = ProfileManager.CurrentProfile.GlobalScale;
-                float logicalCenterY = (camera.Bounds.Y + camera.Bounds.Height / 2f);
-                Y = (int)(logicalCenterY - ((Height / scale) / 2f));
-            }
-            else
-            {
-                Y = camera.Bounds.Y + ((camera.Bounds.Height - Height) / 2);
-            }
+            Y = camera.Bounds.Y + ((camera.Bounds.Height - Height) / 2);
         }
 
         public void SetInScreen()
         {
-            Rectangle windowBounds = Client.Game.Window.ClientBounds;
+            // 使用逻辑坐标系的窗口边界
+            Rectangle logicalBounds = UIScaleHelper.GetLogicalWindowBounds();
 
             int halfWidth = Width / 2;
             int halfHeight = Height / 2;
 
-            int newX = (int)MathHelper.Clamp(X, -halfWidth, windowBounds.Width - halfWidth);
-            int newY = (int)MathHelper.Clamp(Y, -halfHeight, windowBounds.Height - halfHeight);
+            int newX = (int)MathHelper.Clamp(X, -halfWidth, logicalBounds.Width - halfWidth);
+            int newY = (int)MathHelper.Clamp(Y, -halfHeight, logicalBounds.Height - halfHeight);
 
             X = newX;
             Y = newY;

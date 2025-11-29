@@ -711,6 +711,21 @@ namespace ClassicUO.Configuration
                 Log.Error("Warning, SQL settings failed to load!");
                 return;
             }
+            
+            // 首次加载 Profile 时，如果用户没有启用 GlobalScaling，自动应用系统 DPI 缩放
+            // 判断条件：GlobalScaling 未启用 且 GlobalScale 是默认值 1.5f 且 系统有 DPI 缩放
+            // 这样在 HighDPI 显示器（如 macOS Retina）上会有更好的默认体验
+            if (!GlobalScaling && Math.Abs(GlobalScale - 1.5f) < 0.01f && CUOEnviroment.DPIScaleFactor > 1.0f)
+            {
+                // 检测到是默认值（用户从未修改过），且系统有 DPI 缩放
+                GlobalScaling = true;
+                GlobalScale = CUOEnviroment.DPIScaleFactor;
+                Log.Trace($"Auto-enabled GlobalScaling with system DPI scale factor: {GlobalScale:F2}");
+                
+                // 注意：这个设置会在下次 Profile.Save() 时保存
+                // 用户可以在选项中关闭或调整
+            }
+            
             //These are fine if we continue without loading them yet
             Client.Settings.GetAsyncOnMainThread(SettingsScope.Char, Constants.SqlSettings.SCALE_PETS_ENABLED, false, (b) => { EnablePetScaling = b; });
             Client.Settings.GetAsyncOnMainThread(SettingsScope.Global, Constants.SqlSettings.MIN_GUMP_MOVE_DIST, 5, (b) => { MinGumpMoveDistance = b; });

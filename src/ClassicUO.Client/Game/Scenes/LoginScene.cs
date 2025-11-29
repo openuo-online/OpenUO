@@ -12,6 +12,7 @@ using ClassicUO.Network;
 using ClassicUO.Resources;
 using ClassicUO.Utility;
 using ClassicUO.Utility.Logging;
+using ClassicUO.Game.UI;
 
 namespace ClassicUO.Game.Scenes
 {
@@ -142,7 +143,15 @@ namespace ClassicUO.Game.Scenes
                 Client.Game.RestoreWindow();
             }
 
-            Client.Game.SetWindowSize(640, 480);
+            float scale = UIScaleHelper.GetCurrentScale();
+            if (!CUOEnviroment.IsHighDPI && scale > 1f) //非macos
+            {
+                Client.Game.SetWindowSize((int)(640 * scale), (int)(480 * scale));
+            }
+            else
+            {
+                Client.Game.SetWindowSize(640, 480);
+            }
         }
 
 
@@ -182,7 +191,7 @@ namespace ClassicUO.Game.Scenes
                         for (int i = 0; i < Servers.Length; i++)
                         {
                             if (Servers[i].Index == index)
-                            {
+                    {
                                 SelectServer((byte)index);
                                 break;
                             }

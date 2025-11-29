@@ -65,7 +65,7 @@ namespace ClassicUO
 
             Window.ClientSizeChanged += WindowOnClientSizeChanged;
             Window.AllowUserResizing = true;
-            Window.Title = $"TazUO - {CUOEnviroment.Version}";
+            Window.Title = $"OpenUO - {CUOEnviroment.Version}";
             IsMouseVisible = Settings.GlobalSettings.RunMouseInASeparateThread;
 
             IsFixedTimeStep = false; // Settings.GlobalSettings.FixedTimeStep;
@@ -227,17 +227,17 @@ namespace ClassicUO
             if (string.IsNullOrEmpty(title))
             {
 #if DEV_BUILD
-                Window.Title = $"TazUO [dev] - {CUOEnviroment.Version}";
+                Window.Title = $"OpenUO [dev] - {CUOEnviroment.Version}";
 #else
-                Window.Title = $"[TazUO {CUOEnviroment.Version}]";
+                Window.Title = $"[OpenUO {CUOEnviroment.Version}]";
 #endif
             }
             else
             {
 #if DEV_BUILD
-                Window.Title = $"{title} - TazUO [dev] - {CUOEnviroment.Version}";
+                Window.Title = $"{title} - OpenUO [dev] - {CUOEnviroment.Version}";
 #else
-                Window.Title = $"{title} - [TazUO {CUOEnviroment.Version}]";
+                Window.Title = $"{title} - [OpenUO {CUOEnviroment.Version}]";
 #endif
             }
         }
@@ -309,10 +309,11 @@ namespace ClassicUO
             }
             */
 
-            GraphicManager.PreferredBackBufferWidth = width;
-            GraphicManager.PreferredBackBufferHeight = height;
+            float scale = CUOEnviroment.IsHighDPI ? MathF.Max(1f, CUOEnviroment.DPIScaleFactor) : 1f;
+            GraphicManager.PreferredBackBufferWidth = (int)MathF.Round(width * scale);
+            GraphicManager.PreferredBackBufferHeight = (int)MathF.Round(height * scale);
             GraphicManager.ApplyChanges();
-            bufferRect = new Rectangle(0, 0, width, height);
+            bufferRect = new Rectangle(0, 0, GraphicManager.PreferredBackBufferWidth, GraphicManager.PreferredBackBufferHeight);
         }
 
         public void SetWindowBorderless(bool borderless)
@@ -369,10 +370,12 @@ namespace ClassicUO
         {
             SDL_MaximizeWindow(Window.Handle);
 
-            GraphicManager.PreferredBackBufferWidth = Client.Game.Window.ClientBounds.Width;
-            GraphicManager.PreferredBackBufferHeight = Client.Game.Window.ClientBounds.Height;
+            // 在 HiDPI 下，BackBuffer 需要按 DPI 缩放
+            float scale = CUOEnviroment.IsHighDPI ? MathF.Max(1f, CUOEnviroment.DPIScaleFactor) : 1f;
+            GraphicManager.PreferredBackBufferWidth = (int)MathF.Round(Client.Game.Window.ClientBounds.Width * scale);
+            GraphicManager.PreferredBackBufferHeight = (int)MathF.Round(Client.Game.Window.ClientBounds.Height * scale);
             GraphicManager.ApplyChanges();
-            bufferRect = new Rectangle(0, 0, Client.Game.Window.ClientBounds.Width, Client.Game.Window.ClientBounds.Height);
+            bufferRect = new Rectangle(0, 0, GraphicManager.PreferredBackBufferWidth, GraphicManager.PreferredBackBufferHeight);
         }
 
         public bool IsWindowMaximized()

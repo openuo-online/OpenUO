@@ -13,6 +13,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using ClassicUO.Utility.Logging;
+using ClassicUO.Game.UI;
 
 namespace ClassicUO.Game.Managers
 {
@@ -428,8 +429,10 @@ namespace ClassicUO.Game.Managers
         public static void Draw(UltimaBatcher2D batcher)
         {
             SortControlsByInfo();
-            if (InGame && ProfileManager.CurrentProfile.GlobalScaling)
-                batcher.Begin(null, Matrix.CreateScale(ProfileManager.CurrentProfile.GlobalScale));
+
+            float scale = UIScaleHelper.GetCurrentScale();
+            if (scale > 1.0f)
+                batcher.Begin(null, Matrix.CreateScale(scale));
             else
                 batcher.Begin();
 

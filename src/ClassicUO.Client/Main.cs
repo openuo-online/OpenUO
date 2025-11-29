@@ -96,18 +96,6 @@ namespace ClassicUO
 
             ReadSettingsFromArgs(args);
 
-            if (CUOEnviroment.IsHighDPI)
-            {
-                Environment.SetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI", "1");
-            }
-
-            // NOTE: this is a workaroud to fix d3d11 on windows 11 + scale windows
-            Environment.SetEnvironmentVariable("FNA3D_D3D11_FORCE_BITBLT", "1");
-            Environment.SetEnvironmentVariable("FNA3D_BACKBUFFER_SCALE_NEAREST", "1");
-            Environment.SetEnvironmentVariable("FNA3D_OPENGL_FORCE_COMPATIBILITY_PROFILE", "1");
-            Environment.SetEnvironmentVariable(SDL.SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
-            Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + Path.Combine(CUOEnviroment.ExecutablePath, "Data", "Plugins"));
-
             string globalSettingsPath = Settings.GetSettingsFilepath();
 
             if (!Directory.Exists(Path.GetDirectoryName(globalSettingsPath)) || !File.Exists(globalSettingsPath))
@@ -128,6 +116,20 @@ namespace ClassicUO
             {
                 Settings.GlobalSettings = new Settings();
                 Settings.GlobalSettings.Save();
+            }
+            else
+            {
+                //只有macos下才有hidpi，但是系统的缩放都需要保存到 CUOEnviroment.DPIScaleFactor
+                if (Settings.GlobalSettings.LauncherIsHighDpi)
+                {
+                    CUOEnviroment.IsHighDPI = true;
+                    Environment.SetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI", "1");
+                    Log.Trace($"macOS HiDPI: launcher_scale_factor={Settings.GlobalSettings.LauncherScaleFactor:F2}, enabling FNA HiDPI support");
+                }
+                if (Settings.GlobalSettings.LauncherScaleFactor > 1.0f)
+                {
+                    CUOEnviroment.DPIScaleFactor = Settings.GlobalSettings.LauncherScaleFactor;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(Settings.GlobalSettings.Language))
@@ -488,6 +490,7 @@ namespace ClassicUO
                             case "KOR": Settings.GlobalSettings.Language = "KOR"; break;
                             case "PTB": Settings.GlobalSettings.Language = "PTB"; break;
                             case "ITA": Settings.GlobalSettings.Language = "ITA"; break;
+                            case "CHS":
                             case "CHT": Settings.GlobalSettings.Language = "CHT"; break;
                             default:
 
